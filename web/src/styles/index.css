@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './marketing.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,9 +7,20 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-bg text-text font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: #f4d6c1;
+    color: var(--color-text);
   }
   :focus-visible {
     outline: 2px solid var(--color-accent);
@@ -22,7 +34,7 @@
     width: 100%;
     max-width: var(--max-width);
     margin-inline: auto;
-    padding-inline: 1rem;
+    padding-inline: clamp(1rem, 4vw, 2rem);
   }
   .sr-only {
     position: absolute;
@@ -354,6 +366,81 @@
   pointer-events: auto;
 }
 
+/* ---------------------------- Product language ---------------------------- */
+
+/* Mono micro-label: the "catalogue entry" voice used for eyebrows, table
+   headers and metadata. Distinct from the old pill-shaped marketing eyebrow. */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.hairline {
+  height: 1px;
+  width: 100%;
+  background: var(--color-border);
+}
+
+/* Registration tick in the top-right of a panel — a print mark, not decoration
+   for its own sake. Two hairlines: one horizontal, one vertical. */
+.tick-corner {
+  position: relative;
+}
+.tick-corner::before,
+.tick-corner::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--color-gold);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.tick-corner::before {
+  width: 10px;
+  height: 1px;
+}
+.tick-corner::after {
+  width: 1px;
+  height: 10px;
+}
+
+/* Nav underline grows from the left on hover + active page. */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-layout) var(--ease-smooth);
+}
+.nav-underline:hover::after,
+.nav-underline[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
+/* Route-level entrance. Subtle enough to read as polish, not animation. */
+.page-enter {
+  animation: page-in var(--dur-layout) var(--ease-smooth) both;
+}
+
+/* Ruled page edge used by marketing sections. */
+.rule-edge {
+  border-top: 1px solid var(--color-border);
+}
+
 /* Storefront hover transitions stay subtle; this keeps the whole app respectful
    of the OS reduced-motion preference (WCAG 2.3.3). */
 @media (prefers-reduced-motion: reduce) {
@@ -364,5 +451,14 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

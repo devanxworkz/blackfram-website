@@ -119,3 +119,12 @@ export const IconList = (p: IconProps) => (
 export const IconRefresh = (p: IconProps) => (
   <Base {...p}><path d="M20 11a8 8 0 0 0-14-4L4 9" /><path d="M4 5v4h4" /><path d="M4 13a8 8 0 0 0 14 4l2-2" /><path d="M20 19v-4h-4" /></Base>
 );
+export const IconSearch = (p: IconProps) => (
+  <Base {...p}><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></Base>
+);
+export const IconLogout = (p: IconProps) => (
+  <Base {...p}><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4" /><path d="M15 8l4 4-4 4" /><path d="M19 12H9" /></Base>
+);
+export const IconArrowRight = (p: IconProps) => (
+  <Base {...p}><path d="M4 12h15" /><path d="m13 6 6 6-6 6" /></Base>
+);

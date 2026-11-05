@@ -1,5 +1,16 @@
 import { useState, type FormEvent } from 'react';
-import { Avatar, Button, Card, Field, Input, Textarea } from '../../components/ui';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Field,
+  Input,
+  PageHeader,
+  Panel,
+  SectionHeader,
+  Textarea,
+} from '../../components/ui';
+import { IconExternal, IconGlobe, IconUser } from '../../components/icons';
 import { useAuth } from '../../context/AuthProvider';
 import { useToast } from '../../components/Toast';
 import { ApiError, api } from '../../lib/api';
@@ -88,15 +99,34 @@ export default function ProfileEditor() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Profile</h2>
-        <p className="mt-1 text-sm text-text-muted">This is what visitors see at the top of your page.</p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Identity"
+        title="Profile"
+        description="This is what visitors see at the top of your page. Keep it short, warm and recognisable."
+        actions={
+          profile && (
+            <a
+              href={`/u/${profile.username}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-[9px] border border-border bg-elevated px-3.5 text-sm font-semibold text-text transition-colors hover:border-border-strong"
+            >
+              View page
+              <IconExternal />
+            </a>
+          )
+        }
+      />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <form onSubmit={onSubmit} noValidate className="space-y-5">
-          <Card className="space-y-4">
+          <Panel className="space-y-5 p-6">
+            <SectionHeader
+              eyebrow="01"
+              title="The essentials"
+              description="Your name, a short bio and a square photo."
+            />
             <Field label="Display name" htmlFor="displayName" error={errors.displayName}>
               <Input
                 id="displayName"
@@ -105,7 +135,12 @@ export default function ProfileEditor() {
                 required
               />
             </Field>
-            <Field label="Bio" htmlFor="bio" error={errors.bio} hint="Up to 500 characters.">
+            <Field
+              label="Bio"
+              htmlFor="bio"
+              error={errors.bio}
+              hint={`${form.bio.length}/500 characters`}
+            >
               <Textarea
                 id="bio"
                 rows={3}
@@ -122,32 +157,38 @@ export default function ProfileEditor() {
                 onChange={(e) => set('avatarUrl', e.target.value)}
               />
             </Field>
-          </Card>
+          </Panel>
 
-          <Card className="space-y-4">
-            <h3 className="font-bold">Get in touch</h3>
-            <Field
-              label="WhatsApp number"
-              htmlFor="whatsappNumber"
-              error={errors.whatsappNumber}
-              hint="Include the country code, for example 91 for India."
-            >
-              <Input
-                id="whatsappNumber"
-                inputMode="tel"
-                placeholder="919876543210"
-                value={form.whatsappNumber}
-                onChange={(e) => set('whatsappNumber', e.target.value)}
-              />
-            </Field>
-            <Field label="UPI id" htmlFor="upiId" error={errors.upiId} hint="For example name@bank. Shown so people can pay you directly.">
-              <Input
-                id="upiId"
-                placeholder="name@bank"
-                value={form.upiId}
-                onChange={(e) => set('upiId', e.target.value)}
-              />
-            </Field>
+          <Panel className="space-y-5 p-6">
+            <SectionHeader
+              eyebrow="02"
+              title="Contact & payments"
+              description="Let people message you on WhatsApp or pay you with UPI."
+            />
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field
+                label="WhatsApp number"
+                htmlFor="whatsappNumber"
+                error={errors.whatsappNumber}
+                hint="Include the country code, for example 91."
+              >
+                <Input
+                  id="whatsappNumber"
+                  inputMode="tel"
+                  placeholder="919876543210"
+                  value={form.whatsappNumber}
+                  onChange={(e) => set('whatsappNumber', e.target.value)}
+                />
+              </Field>
+              <Field label="UPI id" htmlFor="upiId" error={errors.upiId} hint="For example name@bank.">
+                <Input
+                  id="upiId"
+                  placeholder="name@bank"
+                  value={form.upiId}
+                  onChange={(e) => set('upiId', e.target.value)}
+                />
+              </Field>
+            </div>
             <Field label="UPI QR image URL" htmlFor="upiQrUrl" error={errors.upiQrUrl} hint="Optional. A screenshot of your UPI QR.">
               <Input
                 id="upiQrUrl"
@@ -156,11 +197,20 @@ export default function ProfileEditor() {
                 onChange={(e) => set('upiQrUrl', e.target.value)}
               />
             </Field>
-          </Card>
+          </Panel>
 
-          <Card className="space-y-4">
-            <h3 className="font-bold">Search & sharing</h3>
-            <Field label="Meta title" htmlFor="metaTitle" error={errors.metaTitle} hint="Up to 70 characters.">
+          <Panel className="space-y-5 p-6">
+            <SectionHeader
+              eyebrow="03"
+              title="Search & sharing"
+              description="How your page appears when the link is shared."
+            />
+            <Field
+              label="Meta title"
+              htmlFor="metaTitle"
+              error={errors.metaTitle}
+              hint={`${form.metaTitle.length}/70 characters`}
+            >
               <Input
                 id="metaTitle"
                 maxLength={70}
@@ -168,7 +218,12 @@ export default function ProfileEditor() {
                 onChange={(e) => set('metaTitle', e.target.value)}
               />
             </Field>
-            <Field label="Meta description" htmlFor="metaDescription" error={errors.metaDescription} hint="Up to 160 characters.">
+            <Field
+              label="Meta description"
+              htmlFor="metaDescription"
+              error={errors.metaDescription}
+              hint={`${form.metaDescription.length}/160 characters`}
+            >
               <Textarea
                 id="metaDescription"
                 rows={2}
@@ -177,50 +232,74 @@ export default function ProfileEditor() {
                 onChange={(e) => set('metaDescription', e.target.value)}
               />
             </Field>
-          </Card>
+          </Panel>
 
-          <div className="flex gap-3">
-            <Button type="submit" disabled={busy}>
-              {busy ? 'Saving…' : 'Save profile'}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="submit" loading={busy}>
+              Save profile
             </Button>
             <Button type="button" variant="ghost" onClick={() => setForm(toForm(profile))}>
               Reset
             </Button>
+            <span className="text-xs text-text-muted">Changes go live immediately after saving.</span>
           </div>
         </form>
 
-        <div className="space-y-6">
-          <Card>
-            <h3 className="font-bold">Preview</h3>
-            <div className="mt-4 flex flex-col items-center text-center">
-              <Avatar src={form.avatarUrl || null} name={form.displayName || '?'} size={80} />
-              <p className="mt-3 text-lg font-bold">{form.displayName || 'Your name'}</p>
-              <p className="mt-1 text-sm text-text-muted">{form.bio || 'Your bio goes here.'}</p>
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <Panel className="overflow-hidden p-0">
+            <div className="border-b border-border px-5 py-3">
+              <p className="label-mono text-[10px]">Card preview</p>
             </div>
-          </Card>
+            <div className="px-5 py-7 text-center">
+              <div className="flex justify-center">
+                <Avatar src={form.avatarUrl || null} name={form.displayName || '?'} size={84} />
+              </div>
+              <p className="mt-4 font-display text-xl leading-tight tracking-[-0.02em]">
+                {form.displayName || 'Your name'}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                {form.bio || 'Your bio goes here.'}
+              </p>
+              <div className="mt-4 flex justify-center">
+                {form.whatsappNumber ? (
+                  <Badge tone="success" dot>
+                    WhatsApp connected
+                  </Badge>
+                ) : (
+                  <Badge dot>No WhatsApp yet</Badge>
+                )}
+              </div>
+            </div>
+          </Panel>
 
-          <Card className="space-y-3">
-            <h3 className="font-bold">Username</h3>
+          <Panel className="space-y-4 p-5">
+            <div className="flex items-center gap-2">
+              <span className="text-[17px] text-accent">
+                <IconGlobe />
+              </span>
+              <h2 className="font-display text-lg leading-tight tracking-[-0.01em]">Your address</h2>
+            </div>
             <Field label="Your page address" htmlFor="username" error={errors.username}>
-              <div className="flex items-center rounded-md border border-border bg-elevated focus-within:ring-2 focus-within:ring-accent/40">
-                <span className="px-3 text-sm text-text-muted">/u/</span>
+              <div className="flex items-center rounded-[9px] border border-border-input bg-elevated shadow-[inset_0_1px_2px_rgba(23,19,15,0.04)] transition-[border-color,box-shadow] focus-within:border-accent focus-within:ring-4 focus-within:ring-[#c2410c]/15">
+                <span className="pl-3.5 pr-1 font-mono text-sm text-text-muted">/u/</span>
                 <input
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase())}
                   onBlur={onUsernameBlur}
-                  className="w-full bg-transparent py-2.5 pr-3 text-sm outline-none"
+                  className="w-full min-w-0 bg-transparent py-2.5 pr-3.5 font-mono text-sm text-text outline-none"
                 />
               </div>
             </Field>
-            <p className="text-xs text-text-muted">
+            <p className="text-xs leading-relaxed text-text-muted">
               Changing this updates your public link. Old links will stop working.
             </p>
             <Button size="sm" variant="ghost" onClick={() => void refresh()}>
+              <IconUser />
               Refresh profile
             </Button>
-          </Card>
-        </div>
+          </Panel>
+        </aside>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, Button, Card, EmptyState, Skeleton } from '../../components/ui';
+import { Badge, Button, EmptyState, PageHeader, Panel, Skeleton, Stat } from '../../components/ui';
 import { ErrorBanner, formatDate, timeAgo } from '../../components/admin/AdminBits';
+import { IconArrowRight } from '../../components/icons';
 import { useToast } from '../../components/Toast';
 import { api } from '../../lib/api';
 import { useAsync } from '../../lib/useAsync';
@@ -36,31 +37,40 @@ export default function AdminModeration() {
   const draftRows = drafts.data?.rows ?? [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Reports &amp; Moderation</h2>
-        <p className="mt-1 text-sm text-text-muted">
-          A queue of accounts and pages that may need attention. Actions here are recorded in the audit log.
-        </p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Admin"
+        title="Reports & Moderation"
+        description="A queue of accounts and pages that may need attention. Actions here are recorded in the audit log."
+      />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card className="p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Suspended accounts</p>
-          <p className="mt-1 text-2xl font-bold">{formatNumber(suspended.data?.total ?? 0)}</p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Draft storefronts</p>
-          <p className="mt-1 text-2xl font-bold">{formatNumber(drafts.data?.total ?? 0)}</p>
-        </Card>
-      </div>
+      <Panel className="p-6">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-6">
+          <Stat
+            label="Suspended accounts"
+            value={formatNumber(suspended.data?.total ?? 0)}
+            hint="Waiting for review"
+          />
+          <Stat
+            label="Draft storefronts"
+            value={formatNumber(drafts.data?.total ?? 0)}
+            hint="Not yet published"
+          />
+        </div>
+      </Panel>
 
       {suspended.error && <ErrorBanner message={suspended.error} />}
-      <Card className="overflow-x-auto p-0">
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <h3 className="text-base font-bold">Suspended accounts</h3>
-          <Link to="/admin/creators?q=" className="text-sm font-semibold text-accent hover:underline">
+      <Panel className="overflow-x-auto p-0">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+          <h2 className="font-display text-lg leading-tight tracking-[-0.01em] text-text">
+            Suspended accounts
+          </h2>
+          <Link
+            to="/admin/creators?q="
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline-offset-4 hover:underline"
+          >
             All accounts
+            <IconArrowRight />
           </Link>
         </div>
         {suspended.loading || !suspended.data ? (
@@ -74,25 +84,27 @@ export default function AdminModeration() {
         ) : (
           <table className="w-full min-w-[640px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">Account</th>
-                <th scope="col" className="p-4 font-semibold">Username</th>
-                <th scope="col" className="p-4 font-semibold">Registered</th>
-                <th scope="col" className="p-4 font-semibold">Last sign-in</th>
-                <th scope="col" className="p-4 font-semibold">Action</th>
+              <tr className="border-b border-border bg-surface">
+                {['Account', 'Username', 'Registered', 'Last sign-in', 'Action'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {suspendedRows.map((r) => (
-                <tr key={r.id} className="border-b border-border/60">
-                  <td className="p-4">
-                    <p className="font-medium">{r.displayName ?? '—'}</p>
-                    <p className="text-xs text-text-muted">{r.email}</p>
+                <tr key={r.id} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="px-4 py-3.5">
+                    <p className="font-semibold text-text">{r.displayName ?? '—'}</p>
+                    <p className="font-mono text-[11px] text-text-muted">{r.email}</p>
                   </td>
-                  <td className="p-4 font-mono text-xs">{r.username ? `/u/${r.username}` : '—'}</td>
-                  <td className="p-4 text-text-muted">{formatDate(r.createdAt)}</td>
-                  <td className="p-4 text-text-muted">{timeAgo(r.lastLoginAt)}</td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5 font-mono text-xs text-text-muted">
+                    {r.username ? `/u/${r.username}` : '—'}
+                  </td>
+                  <td className="px-4 py-3.5 text-text-muted">{formatDate(r.createdAt)}</td>
+                  <td className="px-4 py-3.5 text-text-muted">{timeAgo(r.lastLoginAt)}</td>
+                  <td className="px-4 py-3.5">
                     <Button
                       size="sm"
                       variant="secondary"
@@ -107,14 +119,20 @@ export default function AdminModeration() {
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
 
       {drafts.error && <ErrorBanner message={drafts.error} />}
-      <Card className="overflow-x-auto p-0">
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <h3 className="text-base font-bold">Draft storefronts</h3>
-          <Link to="/admin/storefronts" className="text-sm font-semibold text-accent hover:underline">
+      <Panel className="overflow-x-auto p-0">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
+          <h2 className="font-display text-lg leading-tight tracking-[-0.01em] text-text">
+            Draft storefronts
+          </h2>
+          <Link
+            to="/admin/storefronts"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline-offset-4 hover:underline"
+          >
             All storefronts
+            <IconArrowRight />
           </Link>
         </div>
         {drafts.loading || !drafts.data ? (
@@ -128,31 +146,34 @@ export default function AdminModeration() {
         ) : (
           <table className="w-full min-w-[560px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">Storefront</th>
-                <th scope="col" className="p-4 font-semibold">State</th>
-                <th scope="col" className="p-4 font-semibold">Links</th>
-                <th scope="col" className="p-4 font-semibold">Products</th>
+              <tr className="border-b border-border bg-surface">
+                {['Storefront', 'State', 'Links', 'Products'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {draftRows.map((r) => (
-                <tr key={r.tenantId} className="border-b border-border/60">
-                  <td className="p-4">
-                    <p className="font-medium">{r.displayName ?? 'Untitled'}</p>
-                    <p className="font-mono text-xs text-text-muted">{r.username ? `/u/${r.username}` : '—'}</p>
+                <tr key={r.tenantId} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="px-4 py-3.5">
+                    <p className="font-semibold text-text">{r.displayName ?? 'Untitled'}</p>
+                    <p className="font-mono text-[11px] text-text-muted">
+                      {r.username ? `/u/${r.username}` : '—'}
+                    </p>
                   </td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5">
                     <Badge tone="muted">Draft</Badge>
                   </td>
-                  <td className="p-4">{formatNumber(r.links)}</td>
-                  <td className="p-4">{formatNumber(r.products)}</td>
+                  <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(r.links)}</td>
+                  <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(r.products)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
     </div>
   );
 }

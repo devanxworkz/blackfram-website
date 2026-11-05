@@ -1,0 +1,518 @@
+/* ============================================================================
+   Pehchaan marketing layer — "Carnival".
+   A deliberately louder sibling of the Ink & Saffron product UI: saturated
+   gradient meshes, 3D device stages, floating props and big expressive type.
+   Every rule is namespaced `mk-` or scoped under `.mk-root`, so the dashboard
+   and the storefront keep their own quieter personality.
+   ========================================================================== */
+
+:root {
+  /* Festival palette — a saturation step above the product accent. */
+  --mk-coral: #ff5533;
+  --mk-vermilion: #e8420f;
+  --mk-marigold: #ffb01f;
+  --mk-magenta: #d9287d;
+  --mk-violet: #7b3fe4;
+  --mk-indigo: #3b4fe0;
+  --mk-teal: #0e9f8a;
+  --mk-lime: #b7d431;
+
+  --mk-cream: #fff9f2;
+  --mk-ink: #1a120b;
+  --mk-muted: #6c5c50;
+  --mk-line: rgba(26, 18, 11, 0.1);
+
+  --mk-grad-warm: linear-gradient(120deg, #ff7a18 0%, #ff3d68 46%, #a832d6 100%);
+  --mk-grad-sunrise: linear-gradient(135deg, #ffb01f 0%, #ff5533 52%, #d9287d 100%);
+  --mk-grad-cool: linear-gradient(135deg, #3b4fe0 0%, #7b3fe4 52%, #d9287d 100%);
+  --mk-grad-fresh: linear-gradient(135deg, #0e9f8a 0%, #3b4fe0 100%);
+  --mk-grad-gold: linear-gradient(135deg, #ffd166 0%, #ff8f1f 58%, #e8420f 100%);
+  --mk-grad-ink: linear-gradient(150deg, #2a1c17 0%, #1a120b 60%, #24121a 100%);
+
+  --mk-shadow-soft: 0 24px 60px -30px rgba(48, 16, 64, 0.35);
+  --mk-shadow-card: 0 30px 70px -36px rgba(48, 16, 64, 0.42), 0 2px 6px rgba(48, 16, 64, 0.06);
+  --mk-shadow-phone: 0 70px 140px -50px rgba(48, 16, 64, 0.55),
+    0 34px 70px -34px rgba(232, 66, 15, 0.35);
+  --mk-glow-coral: 0 18px 44px -14px rgba(232, 66, 15, 0.6);
+  --mk-glow-violet: 0 18px 44px -14px rgba(123, 63, 228, 0.55);
+}
+
+/* ------------------------------------------------------------------ canvas */
+
+.mk-root {
+  background: var(--mk-cream);
+  color: var(--mk-ink);
+}
+
+/* Layered aurora mesh: four colour pools over warm cream. */
+.mk-mesh {
+  background-color: #fff9f2;
+  background-image:
+    radial-gradient(58% 52% at 10% 6%, rgba(255, 176, 31, 0.42), transparent 64%),
+    radial-gradient(48% 46% at 90% 10%, rgba(217, 40, 125, 0.3), transparent 62%),
+    radial-gradient(54% 52% at 80% 84%, rgba(59, 79, 224, 0.24), transparent 66%),
+    radial-gradient(48% 48% at 14% 90%, rgba(14, 159, 138, 0.26), transparent 64%),
+    linear-gradient(180deg, #fffaf3 0%, #fff2e4 100%);
+}
+
+.mk-mesh-soft {
+  background-image:
+    radial-gradient(50% 60% at 0% 0%, rgba(255, 176, 31, 0.22), transparent 60%),
+    radial-gradient(46% 56% at 100% 20%, rgba(217, 40, 125, 0.16), transparent 62%),
+    radial-gradient(60% 60% at 50% 120%, rgba(59, 79, 224, 0.14), transparent 60%);
+}
+
+.mk-grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(26, 18, 11, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 18, 11, 0.055) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 35%, transparent 78%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 35%, transparent 78%);
+}
+
+/* Big soft colour blobs used to give sections depth. */
+.mk-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(56px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.mk-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* -------------------------------------------------------------------- type */
+
+.mk-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  color: var(--mk-ink);
+  text-wrap: balance;
+}
+
+.mk-gradient-text {
+  background-image: var(--mk-grad-warm);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: mk-pan 12s ease-in-out infinite alternate;
+}
+
+.mk-gradient-text-cool {
+  background-image: var(--mk-grad-cool);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: mk-pan 14s ease-in-out infinite alternate;
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.mk-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  height: 3.15rem;
+  padding-inline: 1.55rem;
+  border-radius: 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    background-color 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.mk-btn-sm {
+  height: 2.5rem;
+  padding-inline: 1.05rem;
+  border-radius: 0.7rem;
+  font-size: 0.8125rem;
+}
+
+.mk-btn-primary {
+  color: #fff9f2;
+  background-image: var(--mk-grad-warm);
+  background-size: 150% 100%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 2px 4px rgba(91, 22, 40, 0.18),
+    var(--mk-glow-coral);
+}
+.mk-btn-primary:hover {
+  transform: translateY(-2px);
+  background-position: 100% 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.36),
+    0 4px 10px rgba(91, 22, 40, 0.2),
+    0 26px 52px -16px rgba(232, 66, 15, 0.65);
+}
+.mk-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Light sweep across the primary button on hover. */
+.mk-btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, transparent 22%, rgba(255, 255, 255, 0.42) 48%, transparent 62%);
+  transform: translateX(-130%);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mk-btn-primary:hover::after {
+  transform: translateX(130%);
+}
+
+.mk-btn-ghost {
+  color: var(--mk-ink);
+  border: 1px solid rgba(26, 18, 11, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 2px rgba(26, 18, 11, 0.05);
+}
+.mk-btn-ghost:hover {
+  transform: translateY(-2px);
+  border-color: rgba(26, 18, 11, 0.24);
+  background: #fff;
+  box-shadow: var(--mk-shadow-soft);
+}
+
+.mk-btn-light {
+  color: var(--mk-ink);
+  background: #fff9f2;
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.45);
+}
+.mk-btn-light:hover {
+  transform: translateY(-2px);
+  background: #fff;
+}
+
+.mk-btn-outline-light {
+  color: #fff3e6;
+  border: 1px solid rgba(255, 243, 230, 0.36);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+}
+.mk-btn-outline-light:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 243, 230, 0.55);
+}
+
+/* ------------------------------------------------------------- surfaces */
+
+.mk-glass {
+  background: rgba(255, 253, 249, 0.74);
+  backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 20px 44px -26px rgba(48, 16, 64, 0.4);
+}
+
+.mk-card {
+  background: #fff;
+  border: 1px solid rgba(26, 18, 11, 0.07);
+  border-radius: 1.25rem;
+  box-shadow: var(--mk-shadow-card);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+@media (hover: hover) {
+  .mk-card-lift:hover {
+    transform: translateY(-8px);
+    border-color: rgba(26, 18, 11, 0.12);
+    box-shadow: 0 44px 90px -40px rgba(48, 16, 64, 0.55), 0 2px 8px rgba(48, 16, 64, 0.08);
+  }
+}
+
+/* Gradient hairline frame: 1px conic edge behind a solid panel. */
+.mk-ring {
+  position: relative;
+}
+.mk-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(255, 176, 31, 0.9), rgba(217, 40, 125, 0.55), rgba(59, 79, 224, 0.6));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.mk-halo {
+  position: absolute;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 210deg,
+    rgba(255, 176, 31, 0.95),
+    rgba(255, 85, 51, 0.45),
+    rgba(217, 40, 125, 0.8),
+    rgba(59, 79, 224, 0.5),
+    rgba(14, 159, 138, 0.65),
+    rgba(255, 176, 31, 0.95)
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- 3D device */
+
+.mk-stage {
+  perspective: 1600px;
+  perspective-origin: 55% 45%;
+}
+
+.mk-3d {
+  transform-style: preserve-3d;
+}
+
+.mk-phone {
+  position: relative;
+  border-radius: 3.1rem;
+  padding: 0.6rem;
+  background: linear-gradient(150deg, #4a3733 0%, #171110 46%, #2d211f 100%);
+  box-shadow: var(--mk-shadow-phone);
+}
+
+/* Rim light along the two lit edges of the frame. */
+.mk-phone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.04) 42%, rgba(255, 255, 255, 0.22));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.mk-phone-screen {
+  position: relative;
+  border-radius: 2.62rem;
+  overflow: hidden;
+  background: #fffdfa;
+  transform: translateZ(0.5px);
+}
+
+.mk-phone-notch {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4.75rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #100c0b;
+  z-index: 4;
+}
+
+/* Side hardware, drawn with two thin bars so the frame reads as a device. */
+.mk-phone-key {
+  position: absolute;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #5a453f, #241a18);
+  z-index: 0;
+}
+
+.mk-tilt {
+  transform: rotateY(-15deg) rotateX(6deg) rotateZ(-1.2deg);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .mk-stage:hover .mk-tilt {
+    transform: rotateY(-5deg) rotateX(2deg) rotateZ(0deg);
+  }
+}
+@media (max-width: 1023px) {
+  .mk-tilt {
+    transform: rotateY(-9deg) rotateX(3deg) rotateZ(-0.6deg);
+  }
+}
+@media (max-width: 640px) {
+  .mk-tilt {
+    transform: rotateY(-4deg) rotateX(1.5deg);
+  }
+}
+
+/* Floating prop cards around the device. */
+.mk-prop {
+  border-radius: 1rem;
+  background: rgba(255, 253, 249, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 2px 6px rgba(48, 16, 64, 0.08),
+    0 26px 50px -24px rgba(48, 16, 64, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@keyframes mk-pan {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+@keyframes mk-float-a {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -16px, 0); }
+}
+@keyframes mk-float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(0, -22px, 0) rotate(1deg); }
+}
+@keyframes mk-float-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-10px, -10px, 0); }
+}
+@keyframes mk-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes mk-pulse-ring {
+  0% { transform: scale(0.94); opacity: 0.55; }
+  70% { transform: scale(1.16); opacity: 0; }
+  100% { transform: scale(1.16); opacity: 0; }
+}
+@keyframes mk-rise {
+  from { opacity: 0; transform: translateY(26px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes mk-shimmer {
+  0% { background-position: -180% 0; }
+  100% { background-position: 180% 0; }
+}
+
+.mk-float-a { animation: mk-float-a 8s ease-in-out infinite; }
+.mk-float-b { animation: mk-float-b 10s ease-in-out infinite; }
+.mk-float-c { animation: mk-float-c 7s ease-in-out infinite; }
+.mk-spin-slow { animation: mk-spin 40s linear infinite; }
+.mk-pulse-ring { animation: mk-pulse-ring 4.5s ease-out infinite; }
+
+.mk-rise { animation: mk-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.mk-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  background-size: 200% 100%;
+  animation: mk-shimmer 3.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-float-a,
+  .mk-float-b,
+  .mk-float-c,
+  .mk-spin-slow,
+  .mk-pulse-ring,
+  .mk-shimmer,
+  .mk-gradient-text,
+  .mk-gradient-text-cool {
+    animation: none;
+  }
+  .mk-tilt,
+  .mk-stage:hover .mk-tilt {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------- utility */
+
+.mk-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.mk-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.mk-kicker-light {
+  color: #7a3b12;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px -12px rgba(48, 16, 64, 0.4);
+}
+
+.mk-kicker-dark {
+  color: #ffe8c9;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 243, 230, 0.24);
+}
+
+.mk-mask-fade-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* The storefront preview adapts to whatever width the device gives it, using
+   container queries rather than viewport breakpoints. A narrow "back" device
+   drops the product rail instead of clipping it. */
+.mk-store {
+  container-type: inline-size;
+}
+
+@container (max-width: 260px) {
+  .mk-store-handle {
+    display: none;
+  }
+}
+
+@container (max-width: 216px) {
+  .mk-store-products {
+    display: none;
+  }
+}
+
+@container (max-width: 196px) {
+  .mk-store-socials {
+    display: none;
+  }
+}

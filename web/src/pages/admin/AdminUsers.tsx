@@ -4,11 +4,12 @@ import {
   Avatar,
   Badge,
   Button,
-  Card,
   Dialog,
   EmptyState,
   Field,
   Input,
+  PageHeader,
+  Panel,
   Select,
   Skeleton,
   Textarea,
@@ -101,13 +102,14 @@ export default function AdminUsers() {
   const rows = data?.rows ?? [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Creators &amp; Users</h2>
-        <p className="mt-1 text-sm text-text-muted">Search, inspect and manage every account on the platform.</p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Admin"
+        title="Creators & Users"
+        description="Search, inspect and manage every account on the platform."
+      />
 
-      <Card>
+      <Panel className="p-5">
         <form onSubmit={onSearch} className="flex flex-wrap items-end gap-3">
           <div className="min-w-[220px] flex-1">
             <Field label="Search" htmlFor="admin-user-search">
@@ -171,11 +173,11 @@ export default function AdminUsers() {
             )}
           </div>
         </form>
-      </Card>
+      </Panel>
 
       {error && <ErrorBanner message={error} />}
 
-      <Card className="overflow-x-auto p-0">
+      <Panel className="overflow-x-auto p-0">
         {loading || !data ? (
           <div className="space-y-2 p-5">
             {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-10" />)}
@@ -187,42 +189,42 @@ export default function AdminUsers() {
         ) : (
           <table className="w-full min-w-[900px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">Account</th>
-                <th scope="col" className="p-4 font-semibold">Username</th>
-                <th scope="col" className="p-4 font-semibold">Page</th>
-                <th scope="col" className="p-4 font-semibold">Views</th>
-                <th scope="col" className="p-4 font-semibold">Last sign-in</th>
-                <th scope="col" className="p-4 font-semibold">Status</th>
-                <th scope="col" className="p-4 font-semibold">Actions</th>
+              <tr className="border-b border-border bg-surface">
+                {['Account', 'Username', 'Page', 'Views', 'Last sign-in', 'Status', 'Actions'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {rows.map((r) => (
-                <tr key={r.id} className="border-b border-border/60">
-                  <td className="p-4">
+                <tr key={r.id} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="px-4 py-3.5">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium">{r.displayName ?? '—'}</p>
+                      <p className="font-semibold text-text">{r.displayName ?? '—'}</p>
                       {r.role === 'admin' && <Badge tone="info">Admin</Badge>}
                     </div>
-                    <p className="text-xs text-text-muted">{r.email}</p>
+                    <p className="font-mono text-[11px] text-text-muted">{r.email}</p>
                   </td>
-                  <td className="p-4 font-mono text-xs">{r.username ? `/u/${r.username}` : '—'}</td>
-                  <td className="p-4">
-                    {r.isPublished ? <Badge tone="success">Live</Badge> : <Badge tone="muted">Draft</Badge>}
+                  <td className="px-4 py-3.5 font-mono text-xs text-text-muted">
+                    {r.username ? `/u/${r.username}` : '—'}
                   </td>
-                  <td className="p-4">{formatNumber(r.views)}</td>
-                  <td className="p-4 text-text-muted" title={formatDateTime(r.lastLoginAt)}>
+                  <td className="px-4 py-3.5">
+                    {r.isPublished ? <Badge tone="success" dot>Live</Badge> : <Badge tone="muted">Draft</Badge>}
+                  </td>
+                  <td className="px-4 py-3.5 tabular-nums text-text">{formatNumber(r.views)}</td>
+                  <td className="px-4 py-3.5 text-text-muted" title={formatDateTime(r.lastLoginAt)}>
                     {timeAgo(r.lastLoginAt)}
                   </td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5">
                     {r.status === 'active' ? (
-                      <Badge tone="success">Active</Badge>
+                      <Badge tone="success" dot>Active</Badge>
                     ) : (
-                      <Badge tone="danger">Suspended</Badge>
+                      <Badge tone="danger" dot>Suspended</Badge>
                     )}
                   </td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5">
                     <div className="flex gap-2">
                       <Button size="sm" variant="secondary" onClick={() => setDetailId(r.id)}>
                         Details
@@ -257,7 +259,7 @@ export default function AdminUsers() {
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
 
       {data && (
         <Pager page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />
@@ -295,12 +297,12 @@ export default function AdminUsers() {
       >
         {confirm && (
           <div className="space-y-3">
-            <p className="text-sm text-text">
+            <p className="text-sm leading-relaxed text-text">
               {confirm.next === 'suspended'
                 ? 'The account and its storefront are hidden and all active sessions are signed out immediately.'
                 : 'The account will be able to sign in again and its storefront restored.'}
             </p>
-            <p className="text-sm font-medium">{confirm.row.displayName ?? confirm.row.email}</p>
+            <p className="text-sm font-semibold">{confirm.row.displayName ?? confirm.row.email}</p>
             {confirm.next === 'suspended' && (
               <Field label="Reason (optional)" htmlFor="admin-suspend-reason" hint="Recorded in the audit log.">
                 <Textarea
@@ -345,7 +347,7 @@ function UserDetailDialog({ userId, onClose }: { userId: string; onClose: () => 
       {error && <ErrorBanner message={error} />}
       {!detail && !error && <Skeleton className="h-48" />}
       {detail && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div className="flex items-center gap-3">
             <Avatar src={detail.profile?.avatarUrl ?? null} name={detail.profile?.displayName ?? detail.email} />
             <div className="min-w-0">
@@ -355,12 +357,12 @@ function UserDetailDialog({ userId, onClose }: { userId: string; onClose: () => 
             {detail.role === 'admin' && <Badge tone="info">Admin</Badge>}
           </div>
 
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-4 text-sm">
             <Row label="Status">
-              {detail.status === 'active' ? <Badge tone="success">Active</Badge> : <Badge tone="danger">Suspended</Badge>}
+              {detail.status === 'active' ? <Badge tone="success" dot>Active</Badge> : <Badge tone="danger" dot>Suspended</Badge>}
             </Row>
             <Row label="Page">
-              {detail.profile?.isPublished ? <Badge tone="success">Live</Badge> : <Badge tone="muted">Draft</Badge>}
+              {detail.profile?.isPublished ? <Badge tone="success" dot>Live</Badge> : <Badge tone="muted">Draft</Badge>}
             </Row>
             <Row label="Username">{detail.profile ? `/u/${detail.profile.username}` : '—'}</Row>
             <Row label="Registered">{formatDate(detail.createdAt)}</Row>
@@ -373,9 +375,9 @@ function UserDetailDialog({ userId, onClose }: { userId: string; onClose: () => 
           </dl>
 
           {detail.profile?.bio && (
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Bio</p>
-              <p className="mt-1 text-sm text-text">{detail.profile.bio}</p>
+            <div className="border-t border-border pt-4">
+              <p className="label-mono">Bio</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-text">{detail.profile.bio}</p>
             </div>
           )}
 
@@ -384,7 +386,7 @@ function UserDetailDialog({ userId, onClose }: { userId: string; onClose: () => 
               href={`/u/${detail.profile.username}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent underline-offset-4 hover:underline"
             >
               <IconExternal /> View public storefront
             </a>
@@ -398,8 +400,8 @@ function UserDetailDialog({ userId, onClose }: { userId: string; onClose: () => 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-wide text-text-muted">{label}</dt>
-      <dd className="mt-0.5 text-text">{children}</dd>
+      <dt className="label-mono text-[10px]">{label}</dt>
+      <dd className="mt-1 text-text">{children}</dd>
     </div>
   );
 }

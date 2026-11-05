@@ -290,8 +290,8 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     key: 'indian-boutique',
-    label: 'Indian Boutique',
-    tagline: 'Burgundy, ivory and gold for Indian shops',
+    label: 'Boutique',
+    tagline: 'Burgundy, ivory and gold for shops',
     swatch: { bg: '#fdf6e9', panel: '#fffaf1', accent: '#7d1430', heading: '#6b1027' },
     defaults: partial({
       template: 'indian-boutique',

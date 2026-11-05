@@ -18,7 +18,7 @@ export async function sendEmail(opts: EmailOptions): Promise<{ sent: boolean; re
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: config.smtpFrom || 'Pehchaan <no-reply@pehchaan.local>',
+          from: config.smtpFrom || 'BLACKFRAM <no-reply@blackfram.local>',
           to: [opts.to],
           subject: opts.subject,
           html: opts.html,

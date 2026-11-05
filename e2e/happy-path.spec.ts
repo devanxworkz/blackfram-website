@@ -14,7 +14,7 @@ async function register(page: Page, opts: { name: string; username: string; emai
   await expect(page).toHaveURL(/\/dashboard/);
 }
 
-test.describe('Pehchaan happy paths', () => {
+test.describe('BLACKFRAM happy paths', () => {
   test('landing page renders the hero and calls to action', async ({ page }) => {
     await page.goto('/');
     await expect(

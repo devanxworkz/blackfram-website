@@ -68,7 +68,7 @@ export default function Login() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Log in to manage your Pehchaan page."
+      subtitle="Log in to manage your BLACKFRAM page."
       footer={
         <>
           New here?{' '}

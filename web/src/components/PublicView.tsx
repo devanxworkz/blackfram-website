@@ -83,7 +83,7 @@ export function PublicView({ data, onLinkClick, compact = false }: Props) {
     themeKey: data.theme.themeKey,
     accent: data.theme.accent,
   });
-  const wa = whatsappLink(data.whatsappNumber, `Hi ${data.displayName}, I found your Pehchaan page.`);
+  const wa = whatsappLink(data.whatsappNumber, `Hi ${data.displayName}, I found your BLACKFRAM page.`);
   const upi = upiLink(data.upiId, data.displayName);
   const layout = data.theme.layout;
 
@@ -437,7 +437,7 @@ export function PublicView({ data, onLinkClick, compact = false }: Props) {
                 Pay via UPI
               </a>
               <p className="mt-2 text-[11px] leading-relaxed" style={{ color: sectionBody }}>
-                Opens your own UPI app. Pehchaan does not process or confirm the payment.
+                Opens your own UPI app. BLACKFRAM does not process or confirm the payment.
               </p>
             </section>
           )}
@@ -448,7 +448,7 @@ export function PublicView({ data, onLinkClick, compact = false }: Props) {
               className="inline-flex items-center gap-1.5 text-xs font-semibold transition duration-200 hover:opacity-80"
               style={{ color: bodyColor, opacity: 0.75 }}
             >
-              <IconLogo /> Made with Pehchaan
+              <IconLogo /> Made with BLACKFRAM
             </a>
           </footer>
         </div>

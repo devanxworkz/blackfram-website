@@ -1,3 +1,4 @@
+import { PageHeader } from '../../components/ui';
 import { PlannedPanel } from '../../components/admin/AdminBits';
 
 export default function AdminPlanned({
@@ -12,11 +13,8 @@ export default function AdminPlanned({
   bullets: string[];
 }) {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">{title}</h2>
-        <p className="mt-1 text-sm text-text-muted">Not switched on yet.</p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader eyebrow="Admin" title={title} description="Not switched on yet." />
       <PlannedPanel title={title} phase={phase} description={description} bullets={bullets} />
     </div>
   );

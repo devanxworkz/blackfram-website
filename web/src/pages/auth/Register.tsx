@@ -63,7 +63,7 @@ export default function Register() {
 
   return (
     <AuthLayout
-      title="Create your Pehchaan"
+      title="Create your BLACKFRAM"
       subtitle="Claim your username and get a page in a minute."
       footer={
         <>

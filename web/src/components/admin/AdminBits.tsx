@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button, Card, cx } from '../ui';
+import { Alert, Badge, Button, Panel, Stat as StatBlock, cx } from '../ui';
 import { formatNumber } from '../../lib/format';
 
 export function formatDate(iso: string | null | undefined): string {
@@ -47,11 +47,7 @@ export function humanAction(action: string): string {
 /* --------------------------------- Banner ---------------------------------- */
 
 export function ErrorBanner({ message }: { message: string }) {
-  return (
-    <div role="alert" className="rounded-md border border-danger/30 bg-red-50 px-4 py-3 text-sm text-danger">
-      {message}
-    </div>
-  );
+  return <Alert tone="danger">{message}</Alert>;
 }
 
 /* ---------------------------------- Bars ----------------------------------- */
@@ -67,27 +63,36 @@ export function BarChart({
 }) {
   const max = Math.max(1, ...series.map((s) => s.count));
   const total = series.reduce((sum, s) => sum + s.count, 0);
+  const labelEvery = series.length > 16 ? 5 : 3;
   return (
     <div role="img" aria-label={ariaLabel}>
-      <div className="flex items-end gap-1" style={{ height }}>
-        {series.map((s) => {
+      <div className="flex items-end gap-1.5" style={{ height }}>
+        {series.map((s, i) => {
           const pct = Math.round((s.count / max) * 100);
           return (
             <div
               key={s.day}
-              className="group relative flex flex-1 items-end rounded-sm bg-surface"
+              className="group relative flex flex-1 items-end"
               style={{ height: '100%' }}
               title={`${s.day}: ${formatNumber(s.count)}`}
             >
               <div
-                className={cx('w-full rounded-sm', s.count > 0 ? 'bg-accent' : 'bg-border')}
+                className={cx(
+                  'w-full rounded-t-[3px] transition-colors duration-150',
+                  s.count > 0 ? 'bg-accent group-hover:bg-accent-hover' : 'bg-[#e7dccc]',
+                )}
                 style={{ height: `${Math.max(s.count > 0 ? 4 : 2, pct)}%` }}
               />
+              {i % labelEvery === 0 && (
+                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-text-muted">
+                  {s.day.slice(5)}
+                </span>
+              )}
             </div>
           );
         })}
       </div>
-      <p className="mt-2 text-xs text-text-muted">
+      <p className="mt-7 text-xs text-text-muted">
         {series[0]?.day} → {series[series.length - 1]?.day} · {formatNumber(total)} total
       </p>
     </div>
@@ -110,7 +115,7 @@ export function Pager({
   if (total <= pageSize) return null;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="text-sm text-text-muted">
         Page {page} of {totalPages} · {formatNumber(total)} total
       </p>
@@ -135,11 +140,9 @@ export function Pager({
 
 export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
-    <Card className="p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-text">{value}</p>
-      {hint && <p className="mt-0.5 text-xs text-text-muted">{hint}</p>}
-    </Card>
+    <Panel className="p-5">
+      <StatBlock label={label} value={value} hint={hint} />
+    </Panel>
   );
 }
 
@@ -157,25 +160,25 @@ export function PlannedPanel({
   bullets: string[];
 }) {
   return (
-    <Card>
+    <Panel className="p-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h3 className="text-lg font-bold">{title}</h3>
-        <span className="rounded-full border border-accent/30 bg-accent-soft px-2 py-0.5 text-xs font-semibold text-accent">
+        <h2 className="font-display text-xl leading-tight tracking-[-0.015em] text-text">{title}</h2>
+        <Badge tone="warning" dot>
           {phase}
-        </span>
+        </Badge>
       </div>
-      <p className="mt-2 max-w-2xl text-sm text-text-muted">{description}</p>
-      <ul className="mt-4 space-y-2 text-sm text-text">
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-muted">{description}</p>
+      <ul className="mt-5 space-y-2.5 text-sm text-text">
         {bullets.map((b) => (
-          <li key={b} className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+          <li key={b} className="flex items-start gap-2.5">
+            <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
             {b}
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-xs text-text-muted">
+      <p className="mt-5 border-t border-border pt-4 text-xs leading-relaxed text-text-muted">
         This section is intentionally not wired up yet — no placeholder data is shown.
       </p>
-    </Card>
+    </Panel>
   );
 }

@@ -1,7 +1,18 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, Button, Card, EmptyState, Field, Input, Select, Skeleton } from '../../components/ui';
+import {
+  Badge,
+  Button,
+  EmptyState,
+  Field,
+  Input,
+  PageHeader,
+  Panel,
+  Select,
+  Skeleton,
+} from '../../components/ui';
 import { ErrorBanner, Pager, formatDateTime, humanAction, timeAgo } from '../../components/admin/AdminBits';
+import { IconArrowRight } from '../../components/icons';
 import { api } from '../../lib/api';
 import { useAsync } from '../../lib/useAsync';
 import { formatNumber } from '../../lib/format';
@@ -39,19 +50,24 @@ export default function AdminAudit() {
   const adminRows = admins.data?.rows ?? [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Admin Roles &amp; Audit Logs</h2>
-        <p className="mt-1 text-sm text-text-muted">
-          Who has access, and every sensitive action they have taken. This log is append-only.
-        </p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Admin"
+        title="Admin Roles & Audit Logs"
+        description="Who has access, and every sensitive action they have taken. This log is append-only."
+      />
 
-      <Card className="overflow-x-auto p-0">
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <h3 className="text-base font-bold">Administrators</h3>
-          <Link to="/admin/creators?q=" className="text-sm font-semibold text-accent hover:underline">
+      <Panel className="overflow-x-auto p-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-5 py-4">
+          <h2 className="font-display text-lg leading-tight tracking-[-0.01em] text-text">
+            Administrators
+          </h2>
+          <Link
+            to="/admin/creators?q="
+            className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline-offset-4 hover:underline"
+          >
             Manage on Creators &amp; Users
+            <IconArrowRight />
           </Link>
         </div>
         {admins.loading || !admins.data ? (
@@ -63,34 +79,35 @@ export default function AdminAudit() {
         ) : (
           <table className="w-full min-w-[560px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">Email</th>
-                <th scope="col" className="p-4 font-semibold">Status</th>
-                <th scope="col" className="p-4 font-semibold">Last sign-in</th>
-                <th scope="col" className="p-4 font-semibold">Registered</th>
+              <tr className="border-b border-border bg-surface">
+                {['Email', 'Status', 'Last sign-in', 'Registered'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {adminRows.map((a) => (
-                <tr key={a.id} className="border-b border-border/60">
-                  <td className="p-4 font-medium">{a.email}</td>
-                  <td className="p-4">
+                <tr key={a.id} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="px-4 py-3.5 font-semibold text-text">{a.email}</td>
+                  <td className="px-4 py-3.5">
                     {a.status === 'active' ? (
-                      <Badge tone="success">Active</Badge>
+                      <Badge tone="success" dot>Active</Badge>
                     ) : (
-                      <Badge tone="danger">Suspended</Badge>
+                      <Badge tone="danger" dot>Suspended</Badge>
                     )}
                   </td>
-                  <td className="p-4 text-text-muted">{timeAgo(a.lastLoginAt)}</td>
-                  <td className="p-4 text-text-muted">{formatDateTime(a.createdAt)}</td>
+                  <td className="px-4 py-3.5 text-text-muted">{timeAgo(a.lastLoginAt)}</td>
+                  <td className="px-4 py-3.5 text-text-muted">{formatDateTime(a.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
 
-      <Card>
+      <Panel className="p-5">
         <form onSubmit={onSearch} className="flex flex-wrap items-end gap-3">
           <div className="min-w-[220px] flex-1">
             <Field label="Search" htmlFor="audit-search">
@@ -138,11 +155,11 @@ export default function AdminAudit() {
             )}
           </div>
         </form>
-      </Card>
+      </Panel>
 
       {error && <ErrorBanner message={error} />}
 
-      <Card className="overflow-x-auto p-0">
+      <Panel className="overflow-x-auto p-0">
         {loading || !data ? (
           <div className="space-y-2 p-5">
             {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-10" />)}
@@ -157,27 +174,29 @@ export default function AdminAudit() {
         ) : (
           <table className="w-full min-w-[820px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">When</th>
-                <th scope="col" className="p-4 font-semibold">Action</th>
-                <th scope="col" className="p-4 font-semibold">Actor</th>
-                <th scope="col" className="p-4 font-semibold">Target</th>
-                <th scope="col" className="p-4 font-semibold">Details</th>
+              <tr className="border-b border-border bg-surface">
+                {['When', 'Action', 'Actor', 'Target', 'Details'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {rows.map((r) => (
-                <tr key={r.id} className="border-b border-border/60 align-top">
-                  <td className="whitespace-nowrap p-4 text-text-muted">{formatDateTime(r.createdAt)}</td>
-                  <td className="p-4">
+                <tr key={r.id} className="align-top transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-text-muted">{formatDateTime(r.createdAt)}</td>
+                  <td className="px-4 py-3.5">
                     <Badge tone="info">{humanAction(r.action)}</Badge>
                   </td>
-                  <td className="p-4">{r.actorEmail}</td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5 font-mono text-xs text-text">{r.actorEmail}</td>
+                  <td className="px-4 py-3.5 text-text">
                     {r.targetLabel ?? '—'}
-                    {r.targetType && <span className="ml-1 text-xs text-text-muted">({r.targetType})</span>}
+                    {r.targetType && (
+                      <span className="ml-1 text-[11px] text-text-muted">({r.targetType})</span>
+                    )}
                   </td>
-                  <td className="p-4 text-text-muted">
+                  <td className="px-4 py-3.5 text-text-muted">
                     {r.metadata && typeof r.metadata.reason === 'string' ? String(r.metadata.reason) : '—'}
                   </td>
                 </tr>
@@ -185,7 +204,7 @@ export default function AdminAudit() {
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
 
       {data && <Pager page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />}
 
@@ -193,4 +212,3 @@ export default function AdminAudit() {
     </div>
   );
 }
-

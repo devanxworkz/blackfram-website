@@ -4,178 +4,283 @@ import { CreatorMarquee, ProductMarquee, BrandStrip } from '../../components/mar
 import { CreatorPagePreviews } from '../../components/marketing/CreatorPagePreviews';
 import { DigitalProductShowcase } from '../../components/marketing/DigitalProductShowcase';
 import { FAQ } from '../../components/marketing/FAQ';
-import { useParallax } from '../../lib/motion';
 import {
+  FloatingCard,
+  MkButton,
+  MkIconBadge,
+  MkKicker,
+  MkSectionHeading,
+  PhoneFrame,
+  ProductTile,
+  STOREFRONTS,
+  StorefrontScreen,
+} from '../../components/marketing/MarketingKit';
+import {
+  IconBag,
+  IconCard,
   IconChart,
   IconCheck,
   IconExternal,
+  IconEye,
   IconPalette,
+  IconUsers,
   IconWhatsapp,
 } from '../../components/icons';
 
 const SAMPLES = [
-  { name: 'Aarti', handle: 'aarti', tagline: 'Food creator · Bengaluru', color: '#c2410c' },
-  { name: 'Cafe Mocha', handle: 'cafe-mocha', tagline: 'Café · Pune', color: '#15803d' },
-  { name: 'DevStudio', handle: 'devstudio', tagline: 'Freelance web dev · remote', color: '#4f46e5' },
+  { name: 'Aarti', handle: 'aarti', tagline: 'Food creator · Bengaluru', color: '#e8420f' },
+  { name: 'Cafe Mocha', handle: 'cafe-mocha', tagline: 'Café · Pune', color: '#0e9f8a' },
+  { name: 'DevStudio', handle: 'devstudio', tagline: 'Freelance web dev · remote', color: '#7b3fe4' },
 ];
 
-export default function Landing() {
-  const heroParallax = useParallax<HTMLDivElement>(0.14, 60);
+/* ------------------------------------------------------------------ hero */
 
+function HeroStage() {
   return (
-    <div className="motion-root overflow-x-hidden">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fff7f2] via-[#fff] to-[#fff]">
-        <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-gradient-to-br from-[#ff6b3e]/30 to-[#ff3cac]/20 blur-3xl" aria-hidden="true" />
-        <div className="absolute -right-24 top-20 h-80 w-80 rounded-full bg-gradient-to-br from-[#7c3aed]/25 to-[#22d3ee]/20 blur-3xl" aria-hidden="true" />
-        <div className="absolute left-1/3 bottom-0 h-64 w-64 rounded-full bg-gradient-to-br from-[#22c55e]/20 to-[#f59e0b]/15 blur-3xl" aria-hidden="true" />
+    <div className="mk-stage relative mx-auto w-full max-w-[540px]">
+      {/* Rings + colour bloom behind the device */}
+      <div
+        aria-hidden="true"
+        className="mk-halo left-1/2 top-1/2 h-[430px] w-[430px] -translate-x-1/2 -translate-y-1/2 opacity-60 sm:h-[500px] sm:w-[500px]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,85,51,0.28),rgba(217,40,125,0.16)_45%,transparent_70%)] blur-2xl sm:h-[440px] sm:w-[440px]"
+      />
+      <div
+        aria-hidden="true"
+        className="mk-spin-slow absolute left-1/2 top-1/2 h-[390px] w-[390px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[rgba(26,18,11,0.15)] sm:h-[470px] sm:w-[470px]"
+      />
 
-        <div className="container-page relative grid items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
+      {/* Second storefront, recessed behind the hero device */}
+      <div
+        aria-hidden="true"
+        className="mk-3d absolute left-0 top-[86px] hidden w-[188px] sm:block"
+        style={{ transform: 'rotateY(16deg) rotateX(5deg) rotateZ(-3deg)' }}
+      >
+        <div className="opacity-[0.92]">
+          <PhoneFrame width={188}>
+            <StorefrontScreen variant={STOREFRONTS.ananya} />
+          </PhoneFrame>
+        </div>
+      </div>
+
+      {/* Hero device */}
+      <div className="relative z-10 ml-auto w-[286px] sm:w-[300px]">
+        <div className="mk-3d mk-tilt">
+          <PhoneFrame width={300}>
+            <StorefrontScreen variant={STOREFRONTS.meera} />
+          </PhoneFrame>
+        </div>
+      </div>
+
+      {/* Floating props */}
+      <FloatingCard className="mk-float-a absolute -left-1 top-2 z-20 w-[186px] px-3 py-2.5 sm:-left-2 sm:top-2 sm:w-[196px]">
+        <div className="flex items-center gap-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[rgba(37,211,102,0.14)] text-[15px] text-[#128c7e]">
+            <IconWhatsapp />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-[11px] font-bold text-[#1a120b]">New WhatsApp order</p>
+            <p className="truncate text-[10px] text-[#6c5c50]">Kanjeevaram · ₹8,400</p>
+          </div>
+        </div>
+      </FloatingCard>
+
+      <FloatingCard className="mk-float-b absolute -right-2 top-[24%] z-20 hidden w-[152px] px-3 py-2.5 sm:-right-5 sm:block">
+        <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#8a7767]">UPI received</p>
+        <p className="mt-1 flex items-baseline gap-1 font-display text-lg leading-none text-[#1a120b]">
+          ₹2,950
+          <span className="text-[9px] font-semibold text-[#0e9f8a]">paid</span>
+        </p>
+      </FloatingCard>
+
+      <FloatingCard className="mk-float-c absolute -left-1 bottom-6 z-20 hidden w-[176px] px-3.5 py-3 sm:-left-4 sm:block">
+        <div className="flex items-center justify-between">
           <div>
+            <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#8a7767]">Page views</p>
+            <p className="mt-1 font-display text-xl leading-none text-[#1a120b]">12,480</p>
+          </div>
+          <div className="flex h-8 items-end gap-[3px]" aria-hidden="true">
+            {[40, 58, 46, 72, 88, 64, 100].map((h, i) => (
+              <span
+                key={i}
+                className="w-[4px] rounded-full"
+                style={{
+                  height: `${h}%`,
+                  background:
+                    i > 4 ? 'var(--mk-grad-warm)' : 'rgba(26,18,11,0.16)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </FloatingCard>
+
+      <FloatingCard className="mk-float-a absolute right-4 -top-2 z-20 hidden items-center gap-2 px-3 py-2 sm:flex">
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-[rgba(255,176,31,0.18)] text-[11px] text-[#b26a00]">
+          <IconCheck />
+        </span>
+        <p className="text-[10px] font-bold text-[#1a120b]">
+          Published <span className="font-normal text-[#6c5c50]">· 2 min ago</span>
+        </p>
+      </FloatingCard>
+    </div>
+  );
+}
+
+/* --------------------------------------------------------------- helpers */
+
+function GradientRule() {
+  return (
+    <div
+      aria-hidden="true"
+      className="h-px w-full"
+      style={{
+        background:
+          'linear-gradient(90deg, transparent, rgba(232,66,15,0.35), rgba(217,40,125,0.35), rgba(59,79,224,0.3), transparent)',
+      }}
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ page */
+
+export default function Landing() {
+  return (
+    <div className="mk-root overflow-x-hidden">
+      {/* ============================== HERO ============================== */}
+      <section className="mk-section mk-mesh mk-noise">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-grid-bg opacity-70" />
+        <div
+          aria-hidden="true"
+          className="mk-orb -left-24 -top-24 h-[26rem] w-[26rem] bg-[rgba(255,176,31,0.55)]"
+        />
+        <div
+          aria-hidden="true"
+          className="mk-orb -right-28 top-10 h-[30rem] w-[30rem] bg-[rgba(217,40,125,0.35)]"
+        />
+        <div
+          aria-hidden="true"
+          className="mk-orb -bottom-28 left-[22%] h-[24rem] w-[24rem] bg-[rgba(59,79,224,0.28)]"
+        />
+
+        <div className="container-page relative grid items-center gap-16 pb-20 pt-14 sm:pt-20 lg:grid-cols-[1.04fr_0.96fr] lg:gap-6 lg:pb-28 lg:pt-24">
+          <div className="min-w-0">
             <Reveal variant="fade">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#ff6b3e]/40 bg-gradient-to-r from-[#ff6b3e]/10 to-[#ff3cac]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#c2410c]">
-                <IconPalette /> Built in India, for Indian creators
-              </span>
+              <MkKicker>Built for creators everywhere</MkKicker>
             </Reveal>
-            <Reveal variant="up" delay={70}>
-              <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-                <span className="sr-only">One link for everything you create.</span>
-                <span aria-hidden="true">
-                  Turn your Instagram into a{' '}
-                  <span className="bg-gradient-to-r from-[#ff3cac] via-[#784ba0] to-[#2b86c5] bg-clip-text text-transparent">
-                    colorful creator store
-                  </span>
-                </span>
+
+            <Reveal variant="up" delay={60}>
+              <h1 className="mk-display mt-6 text-[3rem] leading-[0.92] sm:text-[4rem] lg:text-[4.8rem] xl:text-[5.35rem]">
+                One link for{' '}
+                <span className="relative inline-block">
+                  <span className="mk-gradient-text">everything</span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 260 14"
+                    preserveAspectRatio="none"
+                    className="absolute -bottom-1 left-0 h-3 w-full"
+                  >
+                    <defs>
+                      <linearGradient id="hero-stroke" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ffb01f" />
+                        <stop offset="55%" stopColor="#ff5533" />
+                        <stop offset="100%" stopColor="#d9287d" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M3 9c52-7 128-9 254-5"
+                      fill="none"
+                      stroke="url(#hero-stroke)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>{' '}
+                you create.
               </h1>
             </Reveal>
-            <Reveal variant="up" delay={150}>
-              <p className="mt-6 max-w-xl text-lg text-text-muted sm:text-xl">
-                Pehchaan gives Instagram creators, fashion sellers, home chefs, and digital makers a beautiful home for links, products, WhatsApp orders, and UPI payments.
+
+            <Reveal variant="up" delay={130}>
+              <p className="mt-8 max-w-xl text-[1.0625rem] leading-relaxed text-[#5d4c40] sm:text-lg">
+                BLACKFRAM gives Instagram creators, fashion sellers, home chefs and digital makers a
+                vivid home for links, products, WhatsApp orders and UPI payments — without building a
+                website.
               </p>
             </Reveal>
-            <Reveal variant="up" delay={230}>
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/register"
-                  className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff3cac] to-[#784ba0] px-8 py-4 text-base font-bold text-white shadow-pop transition hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(124,58,237,0.9)]"
-                >
-                  <span>Create your page — free</span>
-                </Link>
-                <Link
-                  to="/pricing"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-8 py-4 text-base font-semibold text-text shadow-card transition hover:-translate-y-1 hover:bg-white"
-                >
+
+            <Reveal variant="up" delay={200}>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <MkButton to="/register" arrow className="w-full sm:w-auto">
+                  Create your page — free
+                </MkButton>
+                <MkButton to="/pricing" variant="ghost" className="w-full sm:w-auto">
                   See pricing
-                </Link>
+                </MkButton>
               </div>
             </Reveal>
-            <Reveal variant="up" delay={310}>
-              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-text-muted">
+
+            <Reveal variant="up" delay={270}>
+              <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3">
                 {['Free forever plan', 'No app to install', 'Your own /u/ page'].map((t) => (
-                  <li key={t} className="flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                  <span key={t} className="flex items-center gap-2 text-[13px] font-medium text-[#5d4c40]">
+                    <span className="grid h-5 w-5 place-items-center rounded-full bg-[rgba(14,159,138,0.14)] text-[11px] text-[#0b7a69]">
                       <IconCheck />
                     </span>
                     {t}
-                  </li>
+                  </span>
                 ))}
-              </ul>
+              </div>
+            </Reveal>
+
+            <Reveal variant="up" delay={330}>
+              <div className="mt-9 flex items-center gap-3 border-t border-[rgba(26,18,11,0.10)] pt-6">
+                <div className="flex -space-x-2.5">
+                  {[1, 2, 3, 4].map((i) => (
+                    <img
+                      key={i}
+                      src={`/assets/creators/creator-${i}.jpg`}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-9 w-9 rounded-full border-2 border-[#fff9f2] object-cover shadow-sm"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+                <p className="text-[12.5px] leading-snug text-[#6c5c50]">
+                  <span className="font-semibold text-[#1a120b]">Made for the way you sell.</span>{' '}
+                  Share one link, take orders on WhatsApp, get paid on UPI.
+                </p>
+              </div>
             </Reveal>
           </div>
 
-          <div className="relative">
-            <div ref={heroParallax} className="parallax pointer-events-none absolute inset-0" aria-hidden="true">
-              <span className="absolute -left-10 top-6 h-56 w-56 rounded-full bg-gradient-to-br from-[#ff6b3e]/40 to-[#ff3cac]/30 blur-3xl" />
-              <span className="absolute -right-8 bottom-0 h-64 w-64 rounded-full bg-gradient-to-br from-[#22d3ee]/35 to-[#7c3aed]/25 blur-3xl" />
-              <span className="absolute left-1/4 top-1/2 h-44 w-44 rounded-full bg-gradient-to-br from-[#22c55e]/25 to-[#f59e0b]/20 blur-3xl" />
-            </div>
-
-            <div className="relative z-10 grid grid-cols-12 gap-4">
-              <div className="col-span-7 float-med">
-                <div className="relative overflow-hidden rounded-[2rem] shadow-pop">
-                  <img
-                    src="/assets/creators/creator-1.jpg"
-                    alt="Indian fashion creator posing with sarees"
-                    className="h-[420px] w-full object-cover sm:h-[520px]"
-                    loading="eager"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-6 text-white">
-                    <p className="text-lg font-bold">Meera Sarees</p>
-                    <p className="text-sm text-white/80">Handloom · Bengaluru</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-5 space-y-4">
-                <div className="float-slow overflow-hidden rounded-[1.75rem] shadow-pop">
-                  <img
-                    src="/assets/creators/creator-2.jpg"
-                    alt="Lifestyle creator portrait"
-                    className="h-[200px] w-full object-cover sm:h-[250px]"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="float-med overflow-hidden rounded-[1.75rem] shadow-pop">
-                  <img
-                    src="/assets/creators/creator-3.jpg"
-                    alt="Fashion creator content"
-                    className="h-[180px] w-full object-cover sm:h-[230px]"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-              <div className="col-span-12 float-fast">
-                <div className="relative overflow-hidden rounded-[2rem] shadow-pop">
-                  <img
-                    src="/assets/products/prod-1.jpg"
-                    alt="Digital product cover for creator template"
-                    className="h-[200px] w-full object-cover sm:h-[240px]"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-between px-6">
-                    <div className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-text shadow-card backdrop-blur">
-                      Digital Products · Templates · Presets
-                    </div>
-                    <div className="rounded-full bg-gradient-to-r from-[#ff3cac] to-[#784ba0] px-4 py-2 text-sm font-semibold text-white shadow-card">
-                      Sell in minutes
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="animate-floaty absolute -right-4 top-10 z-20 hidden lg:block" aria-hidden="true">
-              <div className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/90 px-4 py-3 shadow-pop backdrop-blur">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
-                  <IconWhatsapp />
-                </span>
-                <div>
-                  <p className="text-xs font-bold text-text">New order on WhatsApp</p>
-                  <p className="text-[11px] text-text-muted">Kanjeevaram silk · ₹8,400</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="animate-floaty-slow absolute -left-6 bottom-12 z-20 hidden lg:block" aria-hidden="true">
-              <div className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/90 px-4 py-3 shadow-pop backdrop-blur">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#ff3cac]/20 to-[#784ba0]/20 text-[#7c3aed]">
-                  <IconChart />
-                </span>
-                <div>
-                  <p className="text-xs font-bold text-text">+1,840 clicks</p>
-                  <p className="text-[11px] text-text-muted">this week</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Reveal variant="scale" delay={140} className="min-w-0">
+            <HeroStage />
+          </Reveal>
         </div>
       </section>
 
-      {/* MARQUEE */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#1f1147] via-[#2b0f3a] to-[#120b2e] py-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,60,172,0.25),transparent_60%)]" />
+      {/* ============================ TICKER ============================= */}
+      <section
+        className="mk-section relative py-12 text-[#fff6ea] sm:py-14"
+        style={{ backgroundImage: 'var(--mk-grad-ink)' }}
+      >
+        <div
+          aria-hidden="true"
+          className="mk-orb -left-32 top-0 h-[24rem] w-[24rem] bg-[rgba(232,66,15,0.45)]"
+        />
+        <div
+          aria-hidden="true"
+          className="mk-orb -right-24 bottom-0 h-[22rem] w-[22rem] bg-[rgba(123,63,228,0.45)]"
+        />
         <div className="relative">
-          <div className="container-page mb-6 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">Creators building with Pehchaan</p>
+          <div className="container-page mb-6 flex flex-col items-center gap-3 text-center">
+            <MkKicker dark>Creators building with BLACKFRAM</MkKicker>
+            <p className="max-w-lg text-sm text-[#d9c3ad]">
+              Real pages from fashion, beauty, food and digital creators everywhere.
+            </p>
           </div>
           <CreatorMarquee />
           <ProductMarquee />
@@ -185,178 +290,264 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CREATOR EXAMPLES */}
-      <section className="container-page py-20 lg:py-28">
-        <Reveal variant="up">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center rounded-full border border-[#ff3cac]/40 bg-gradient-to-r from-[#ff3cac]/10 to-[#784ba0]/10 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#7c3aed]">
-              Creator pages that pop
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-              Every creator deserves a page that looks as good as their content
-            </h2>
-            <p className="mt-4 text-lg text-text-muted">
-              Pick a vibe, showcase your products, and send followers straight to WhatsApp or your shop.
-            </p>
-          </div>
-        </Reveal>
-        <div className="mt-12">
-          <CreatorPagePreviews />
-        </div>
-        <Reveal variant="up" delay={120}>
-          <div className="mt-10 text-center">
-            <Link to="/register" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff3cac] to-[#784ba0] px-8 py-3 text-base font-bold text-white shadow-pop transition hover:-translate-y-1">
-              Create your page — free
-              <span>→</span>
-            </Link>
-          </div>
-        </Reveal>
-      </section>
-
-      {/* FEATURES */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fff] to-[#f8f7ff] py-20 lg:py-28">
-        <div className="absolute -right-32 top-20 h-80 w-80 rounded-full bg-gradient-to-br from-[#7c3aed]/15 to-[#22d3ee]/15 blur-3xl" aria-hidden="true" />
+      {/* ======================= CREATOR STOREFRONTS ===================== */}
+      <section className="mk-section mk-mesh-soft py-20 lg:py-28">
         <div className="container-page relative">
           <Reveal variant="up">
-            <div className="mx-auto max-w-3xl text-center">
-              <span className="inline-flex items-center rounded-full border border-[#7c3aed]/40 bg-[#7c3aed]/10 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#6d28d9]">
-                Everything in one place
-              </span>
-              <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-                Built to help Indian creators grow and get paid
-              </h2>
-              <p className="mt-4 text-lg text-text-muted">
-                No clutter. Just the tools that actually move the needle on Instagram.
-              </p>
+            <MkSectionHeading
+              eyebrow="Creator pages that pop"
+              title={
+                <>
+                  Every creator deserves a page as{' '}
+                  <span className="mk-gradient-text">vivid</span> as their work
+                </>
+              }
+              description="Pick a palette, arrange your links, showcase products, and send followers straight to WhatsApp or your shop."
+            />
+          </Reveal>
+          <div className="mt-14">
+            <CreatorPagePreviews />
+          </div>
+          <Reveal variant="up" delay={100}>
+            <div className="mt-12 flex justify-center">
+              <MkButton to="/register" arrow>
+                Create your page — free
+              </MkButton>
             </div>
           </Reveal>
-          <div className="mt-12 grid gap-6 lg:grid-cols-12">
-            <Reveal variant="up" delay={60} className="lg:col-span-7">
-              <div className="group relative overflow-hidden rounded-[2.5rem] border border-white/60 bg-gradient-to-br from-[#ff3cac] via-[#784ba0] to-[#2b86c5] p-8 text-white shadow-pop sm:p-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_60%)]" />
-                <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
-                  <div>
-                    <h3 className="text-2xl font-extrabold sm:text-3xl">One link for everything</h3>
-                    <p className="mt-3 text-base text-white/90 sm:text-lg">
-                      Bring Instagram, YouTube, your shop, and WhatsApp together on one beautiful page.
+        </div>
+      </section>
+
+      {/* ============================ FEATURES =========================== */}
+      <section className="mk-section bg-[#fffdf9] py-20 lg:py-28">
+        <div className="container-page">
+          <Reveal variant="up">
+            <MkSectionHeading
+              eyebrow="Everything in one place"
+              title={
+                <>
+                  Built to help creators{' '}
+                  <span className="mk-gradient-text-cool">grow and get paid</span>
+                </>
+              }
+              description="No clutter, no code, no plugins. Just the tools that actually move the needle on Instagram."
+            />
+          </Reveal>
+
+          <div className="mt-14 grid gap-5 lg:grid-cols-12">
+            {/* One link — hero card */}
+            <Reveal variant="up" delay={40} className="lg:col-span-7">
+              <div
+                className="mk-card mk-card-lift relative h-full overflow-hidden p-7 sm:p-9"
+                style={{ backgroundImage: 'var(--mk-grad-warm)' }}
+              >
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-noise" />
+                <div
+                  aria-hidden="true"
+                  className="absolute -right-14 -top-14 h-52 w-52 rounded-full bg-white/15 blur-2xl"
+                />
+                <div className="relative flex h-full flex-col justify-between gap-8 sm:flex-row sm:items-center">
+                  <div className="max-w-sm">
+                    <span className="mk-kicker mk-kicker-dark">One address</span>
+                    <h3 className="mk-display mt-4 text-[1.9rem] leading-[1.02] text-white sm:text-[2.25rem]">
+                      One link for everything you make
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#ffe7dc] sm:text-[15px]">
+                      Bring Instagram, YouTube, your shop and WhatsApp together on one beautiful page
+                      that fits in a bio.
                     </p>
-                    <div className="mt-6 flex flex-wrap gap-3">
+                    <div className="mt-6 flex flex-wrap gap-2">
                       {['Instagram', 'YouTube', 'Shop', 'WhatsApp'].map((item) => (
-                        <span key={item} className="rounded-full bg-white/20 px-4 py-1.5 text-sm font-semibold backdrop-blur">
+                        <span
+                          key={item}
+                          className="rounded-full border border-[rgba(255,255,255,0.34)] bg-[rgba(255,255,255,0.16)] px-3 py-1 text-[11px] font-semibold text-white backdrop-blur"
+                        >
                           {item}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className="relative">
-                    <div className="float-med rounded-[2rem] bg-white/95 p-6 text-text shadow-pop">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#ff3cac] to-[#784ba0] text-lg font-bold text-white">
-                          M
-                        </span>
-                        <div>
-                          <p className="font-bold">Meera Sarees</p>
-                          <p className="text-sm text-text-muted">Handloom sarees · Bengaluru</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 space-y-2">
-                        {['Shop the collection', 'New arrivals', 'Instagram', 'WhatsApp'].map((l) => (
-                          <div key={l} className="flex items-center justify-between rounded-xl border border-border px-4 py-2.5">
-                            <span className="text-sm font-semibold">{l}</span>
-                            <span className="text-text-muted">→</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-            <Reveal variant="up" delay={120} className="lg:col-span-5">
-              <div className="group relative h-full overflow-hidden rounded-[2.5rem] border border-white/60 bg-gradient-to-br from-[#22c55e] to-[#0ea5e9] p-8 text-white shadow-pop sm:p-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_60%)]" />
-                <div className="relative flex h-full flex-col">
-                  <div>
-                    <h3 className="text-2xl font-extrabold sm:text-3xl">Sell without a website</h3>
-                    <p className="mt-3 text-base text-white/90 sm:text-lg">
-                      Showcase physical and digital products with prices in ₹ and turn clicks into orders.
-                    </p>
-                  </div>
-                  <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                    {[{ name: 'Kanjeevaram silk', price: '₹8,400' }, { name: 'Vitamin C serum', price: '₹899' }].map((p) => (
-                      <div key={p.name} className="rounded-2xl bg-white/95 p-4 text-text shadow-card">
-                        <div className="aspect-[4/5] w-full rounded-xl bg-gradient-to-br from-[#c2410c] to-[#f59e0b]" />
-                        <p className="mt-2 text-sm font-semibold">{p.name}</p>
-                        <p className="mt-1 text-base font-bold text-accent">{p.price}</p>
-                        <button className="mt-3 w-full rounded-lg bg-accent py-2 text-xs font-semibold text-on-accent">
-                          Buy now
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-            <Reveal variant="up" delay={180} className="lg:col-span-6">
-              <div className="group relative h-full overflow-hidden rounded-[2.5rem] border border-white/60 bg-gradient-to-br from-[#25D366] to-[#128C7E] p-8 text-white shadow-pop sm:p-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.22),transparent_60%)]" />
-                <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
-                  <div>
-                    <h3 className="text-2xl font-extrabold sm:text-3xl">Chat on WhatsApp</h3>
-                    <p className="mt-3 text-base text-white/90 sm:text-lg">
-                      Let customers ask questions and order directly through WhatsApp.
-                    </p>
-                  </div>
-                  <div className="rounded-[2rem] bg-white/95 p-5 text-text shadow-pop">
-                    <div className="flex items-center gap-3 border-b border-border/70 pb-3">
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white">
-                        <IconWhatsapp />
+
+                  <div className="w-full max-w-[224px] shrink-0 rounded-[16px] bg-[#fffaf4] p-3.5 shadow-[0_24px_50px_-24px_rgba(48,16,64,0.6)] sm:rotate-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="grid h-9 w-9 place-items-center rounded-full bg-[rgba(232,66,15,0.12)] font-display text-sm text-[#e8420f]">
+                        M
                       </span>
-                      <div>
-                        <p className="text-sm font-bold">Aarti Nair</p>
-                        <p className="text-xs text-text-muted">Online</p>
+                      <div className="min-w-0">
+                        <p className="truncate font-display text-[13px] leading-tight">Meera Sarees</p>
+                        <p className="truncate text-[9.5px] text-[#7c6a5a]">Handloom · Bengaluru</p>
                       </div>
                     </div>
-                    <div className="mt-4 space-y-2">
-                      <div className="inline-block rounded-2xl rounded-bl-sm bg-[#f1f5f9] px-4 py-2 text-sm">
-                        Hi! I’d love to know more about this product.
-                      </div>
-                      <div className="ml-auto inline-block rounded-2xl rounded-br-sm bg-[#DCF8C6] px-4 py-2 text-sm">
-                        Sure! Want to see more colours?
-                      </div>
+                    <div className="mt-3 space-y-1.5">
+                      {[
+                        ['Shop the collection', '#e8420f'],
+                        ['New arrivals', '#7b3fe4'],
+                        ['WhatsApp', '#0e9f8a'],
+                      ].map(([label, tint]) => (
+                        <div
+                          key={label}
+                          className="flex items-center justify-between rounded-[7px] border border-[rgba(26,18,11,0.08)] bg-white px-2.5 py-1.5"
+                        >
+                          <span className="text-[9.5px] font-semibold text-[#1a120b]">{label}</span>
+                          <span className="text-[9px]" style={{ color: tint }}>
+                            →
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] py-2.5 text-sm font-semibold text-white">
-                      <IconWhatsapp /> Chat on WhatsApp
-                    </button>
                   </div>
                 </div>
               </div>
             </Reveal>
-            <Reveal variant="up" delay={240} className="lg:col-span-6">
-              <div className="group relative h-full overflow-hidden rounded-[2.5rem] border border-white/60 bg-gradient-to-br from-[#7c3aed] to-[#ec4899] p-8 text-white shadow-pop sm:p-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.22),transparent_60%)]" />
-                <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
-                  <div>
-                    <h3 className="text-2xl font-extrabold sm:text-3xl">UPI to get paid</h3>
-                    <p className="mt-3 text-base text-white/90 sm:text-lg">
-                      Share your UPI ID or QR so Indian buyers can pay you directly.
-                    </p>
-                  </div>
-                  <div className="rounded-[2rem] bg-white/95 p-6 text-center text-text shadow-pop">
-                    <p className="text-sm font-semibold">Scan to pay</p>
-                    <div className="relative mx-auto mt-4 grid h-40 w-40 place-items-center rounded-2xl border border-border bg-[#f8fafc] p-3">
-                      <div className="grid h-28 w-28 grid-cols-5 gap-1">
-                        {Array.from({ length: 25 }).map((_, i) => (
-                          <span key={i} className={`h-full w-full rounded-[2px] ${i % 3 === 0 ? 'bg-text' : 'bg-white'}`} />
-                        ))}
+
+            {/* Sell anything */}
+            <Reveal variant="up" delay={90} className="lg:col-span-5">
+              <div className="mk-card mk-card-lift relative h-full overflow-hidden p-7 sm:p-8">
+                <MkIconBadge gradient="var(--mk-grad-gold)">
+                  <IconBag />
+                </MkIconBadge>
+                <h3 className="mk-display mt-5 text-[1.6rem] leading-[1.05]">Sell anything you make</h3>
+                <p className="mt-2.5 text-sm leading-relaxed text-[#6c5c50]">
+                  Sarees, serums, e-books, presets or 1:1 sessions. One product card works for all of
+                  them, priced in ₹.
+                </p>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  {[
+                    { name: 'Kanjeevaram silk', price: '₹8,400', from: '#ffb01f', to: '#e8420f' },
+                    { name: 'Vitamin C serum', price: '₹899', from: '#a78bfa', to: '#7b3fe4' },
+                  ].map((p) => (
+                    <div
+                      key={p.name}
+                      className="overflow-hidden rounded-[12px] border border-[rgba(26,18,11,0.07)] bg-[#fffaf4]"
+                    >
+                      <ProductTile from={p.from} to={p.to} label={p.name} className="h-20 w-full" />
+                      <div className="p-2.5">
+                        <p className="truncate text-[10.5px] font-semibold">{p.name}</p>
+                        <p className="mt-0.5 text-[11px] font-bold text-[#e8420f]">{p.price}</p>
                       </div>
                     </div>
-                    <div className="mt-4 rounded-xl border border-border px-4 py-2">
-                      <p className="text-xs uppercase tracking-wide text-text-muted">UPI ID</p>
-                      <p className="mt-1 font-mono text-sm font-semibold">creator@example</p>
-                    </div>
-                    <p className="mt-2 text-xs text-text-muted">Demo QR • for illustration only</p>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* WhatsApp */}
+            <Reveal variant="up" delay={140} className="lg:col-span-4">
+              <div className="mk-card mk-card-lift relative h-full overflow-hidden p-7">
+                <MkIconBadge gradient="linear-gradient(135deg,#25d366,#0e9f8a)">
+                  <IconWhatsapp />
+                </MkIconBadge>
+                <h3 className="mk-display mt-5 text-[1.45rem] leading-[1.08]">Orders on WhatsApp</h3>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-[#6c5c50]">
+                  Customers ask questions and order in the app they already use.
+                </p>
+                <div className="mt-5 rounded-[12px] bg-[#f2fbf6] p-3">
+                  <div className="w-fit max-w-[92%] rounded-[10px] rounded-bl-[3px] bg-white px-3 py-2 text-[10.5px] leading-snug text-[#1a120b] shadow-sm">
+                    Is the Kanjeevaram still available? 😍
                   </div>
+                  <div className="ml-auto mt-1.5 w-fit max-w-[92%] rounded-[10px] rounded-br-[3px] bg-[#dcf8c6] px-3 py-2 text-[10.5px] leading-snug text-[#1a120b]">
+                    Yes! Sending you the UPI link now.
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* UPI */}
+            <Reveal variant="up" delay={190} className="lg:col-span-4">
+              <div
+                className="mk-card mk-card-lift relative h-full overflow-hidden p-7 text-white"
+                style={{ backgroundImage: 'var(--mk-grad-cool)' }}
+              >
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-noise" />
+                <div className="relative">
+                  <span className="grid h-11 w-11 place-items-center rounded-[13px] bg-white/20 text-white">
+                    <IconCard />
+                  </span>
+                  <h3 className="mk-display mt-5 text-[1.45rem] leading-[1.08] text-white">
+                    Get paid on UPI
+                  </h3>
+                  <p className="mt-2 text-[13.5px] leading-relaxed text-[#e7ddff]">
+                    Share your UPI ID or QR. Money lands directly in your account, no middleman.
+                  </p>
+                  <div className="mt-5 flex items-center gap-3 rounded-[12px] bg-white/14 p-3 backdrop-blur">
+                    <div className="grid h-12 w-12 shrink-0 grid-cols-4 gap-[2px] rounded-[6px] bg-white p-1">
+                      {Array.from({ length: 16 }).map((_, i) => (
+                        <span
+                          key={i}
+                          className={`rounded-[1px] ${i % 3 === 0 || i === 5 ? 'bg-[#1a120b]' : 'bg-white'}`}
+                        />
+                      ))}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[#d9cdff]">
+                        UPI ID
+                      </p>
+                      <p className="truncate text-[12px] font-semibold">meera@blackfram</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Analytics */}
+            <Reveal variant="up" delay={240} className="lg:col-span-4">
+              <div className="mk-card mk-card-lift relative h-full overflow-hidden p-7">
+                <MkIconBadge gradient="linear-gradient(135deg,#7b3fe4,#d9287d)">
+                  <IconChart />
+                </MkIconBadge>
+                <h3 className="mk-display mt-5 text-[1.45rem] leading-[1.08]">Know what works</h3>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-[#6c5c50]">
+                  See views, clicks and where your audience comes from.
+                </p>
+                <div className="mt-5 flex h-24 items-end gap-1.5">
+                  {[34, 52, 40, 66, 48, 78, 58, 92, 70, 100].map((h, i) => (
+                    <span
+                      key={i}
+                      className="flex-1 rounded-t-[3px]"
+                      style={{
+                        height: `${h}%`,
+                        background:
+                          i > 6 ? 'var(--mk-grad-warm)' : 'rgba(123,63,228,0.16)',
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-[rgba(26,18,11,0.08)] pt-3">
+                  <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#8a7767]">
+                    Last 7 days
+                  </span>
+                  <span className="text-[10px] font-bold text-[#0e9f8a]">+18.4%</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Themes */}
+            <Reveal variant="up" delay={290} className="lg:col-span-12">
+              <div className="mk-card mk-card-lift grid items-center gap-6 p-7 sm:grid-cols-[1fr_auto] sm:p-8">
+                <div className="max-w-xl">
+                  <div className="flex items-center gap-3">
+                    <MkIconBadge gradient="var(--mk-grad-fresh)" size={40}>
+                      <IconPalette />
+                    </MkIconBadge>
+                    <div>
+                      <h3 className="mk-display text-[1.4rem] leading-tight">Looks like you, not a template</h3>
+                      <p className="mt-1 text-[13px] leading-relaxed text-[#6c5c50]">
+                        Templates, palettes, cover art and type — change everything from one screen.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {['#fff3e0', '#1a120b', '#e8420f', '#ffb01f', '#d9287d', '#7b3fe4', '#0e9f8a', '#b7d431'].map(
+                    (c) => (
+                      <span
+                        key={c}
+                        className="h-9 w-9 rounded-full border-2 border-white shadow-[0_6px_14px_-6px_rgba(48,16,64,0.5)] transition-transform duration-200 hover:-translate-y-1"
+                        style={{ background: c }}
+                        aria-hidden="true"
+                      />
+                    ),
+                  )}
                 </div>
               </div>
             </Reveal>
@@ -364,55 +555,92 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* DIGITAL PRODUCTS */}
-      <section className="container-page py-20 lg:py-28">
-        <Reveal variant="up">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center rounded-full border border-[#ec4899]/40 bg-[#ec4899]/10 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#be185d]">
-              Monetize with digital products
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-              E-books, templates, presets and more
-            </h2>
-            <p className="mt-4 text-lg text-text-muted">
-              Turn your knowledge into income with beautiful digital product showcases.
-            </p>
-          </div>
-        </Reveal>
-        <div className="mt-12">
-          <DigitalProductShowcase />
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#f8f7ff] to-[#fff] py-20 lg:py-28">
+      {/* ======================= DIGITAL PRODUCTS ======================== */}
+      <section className="mk-section mk-mesh-soft border-y border-[rgba(26,18,11,0.07)] py-20 lg:py-28">
         <div className="container-page">
           <Reveal variant="up">
-            <div className="mx-auto max-w-3xl text-center">
-              <span className="inline-flex items-center rounded-full border border-[#22d3ee]/40 bg-[#22d3ee]/10 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#0369a1]">
-                How it works
-              </span>
-              <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-                From profile to paid in three steps
-              </h2>
-            </div>
+            <MkSectionHeading
+              eyebrow="Monetize with digital products"
+              title={
+                <>
+                  E-books, templates, presets{' '}
+                  <span className="mk-gradient-text">and more</span>
+                </>
+              }
+              description="Turn your knowledge into income with product pages that look as good as your feed."
+            />
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-14">
+            <DigitalProductShowcase />
+          </div>
+        </div>
+      </section>
+
+      {/* ========================== HOW IT WORKS ========================= */}
+      <section className="mk-section bg-[#fffdf9] py-20 lg:py-28">
+        <div
+          aria-hidden="true"
+          className="mk-orb -right-24 top-10 h-[22rem] w-[22rem] bg-[rgba(255,176,31,0.28)]"
+        />
+        <div className="container-page relative">
+          <Reveal variant="up">
+            <MkSectionHeading
+              eyebrow="How it works"
+              title={
+                <>
+                  From profile to <span className="mk-gradient-text-cool">paid</span> in three steps
+                </>
+              }
+            />
+          </Reveal>
+
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
             {[
-              { step: '01', title: 'Create your page', body: 'Sign up and pick a template that fits your brand.', color: 'from-[#ff3cac] to-[#784ba0]' },
-              { step: '02', title: 'Add links & products', body: 'Add your social links, showcase products, or add digital items.', color: 'from-[#22d3ee] to-[#7c3aed]' },
-              { step: '03', title: 'Share & earn', body: 'Share your /u/ page on Instagram and start getting orders.', color: 'from-[#22c55e] to-[#0ea5e9]' },
-            ].map((s) => (
-              <Reveal key={s.step} variant="up" delay={Number(s.step) * 40}>
-                <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white p-8 shadow-card transition hover:-translate-y-1">
-                  <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${s.color} opacity-20 blur-2xl`} />
-                  <div className="relative">
-                    <span className={`inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${s.color} text-lg font-bold text-white shadow-card`}>
+              {
+                step: '01',
+                title: 'Create your page',
+                body: 'Sign up free and pick a palette that fits your brand. Your page is live on /u/yourname.',
+                icon: <IconEye />,
+                grad: 'var(--mk-grad-warm)',
+              },
+              {
+                step: '02',
+                title: 'Add links & products',
+                body: 'Drop in Instagram, YouTube, WhatsApp, your shop and digital products with prices in ₹.',
+                icon: <IconBag />,
+                grad: 'linear-gradient(135deg,#ffb01f,#e8420f)',
+              },
+              {
+                step: '03',
+                title: 'Share & earn',
+                body: 'Put the link in your bio. Followers browse, ask on WhatsApp, and pay you on UPI.',
+                icon: <IconUsers />,
+                grad: 'linear-gradient(135deg,#7b3fe4,#d9287d)',
+              },
+            ].map((s, i) => (
+              <Reveal key={s.step} variant="up" delay={i * 80}>
+                <div className="group relative h-full overflow-hidden rounded-[20px] border border-[rgba(26,18,11,0.07)] bg-white p-7 shadow-[0_24px_60px_-40px_rgba(48,16,64,0.45)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_40px_80px_-40px_rgba(48,16,64,0.5)]">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="font-display text-[3.25rem] leading-none tracking-[-0.06em]"
+                      style={{
+                        backgroundImage: s.grad,
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }}
+                    >
                       {s.step}
                     </span>
-                    <h3 className="mt-4 text-xl font-bold">{s.title}</h3>
-                    <p className="mt-2 text-text-muted">{s.body}</p>
+                    <span
+                      className="grid h-10 w-10 place-items-center rounded-[11px] text-white shadow-[0_10px_22px_-12px_rgba(48,16,64,0.7)]"
+                      style={{ backgroundImage: s.grad }}
+                    >
+                      {s.icon}
+                    </span>
                   </div>
+                  <h3 className="mk-display mt-6 text-[1.4rem] leading-[1.1]">{s.title}</h3>
+                  <p className="mt-2.5 text-[13.5px] leading-relaxed text-[#6c5c50]">{s.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -420,153 +648,245 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
-      <section className="container-page py-20 lg:py-28">
-        <Reveal variant="up">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center rounded-full border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#b45309]">
-              Built for every kind of creator
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-              Fashion, beauty, food, digital and more
-            </h2>
-            <p className="mt-4 text-lg text-text-muted">
-              Join creators across India building beautiful pages with Pehchaan.
-            </p>
-          </div>
-        </Reveal>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          {['Sarees & fashion', 'Beauty & skincare', 'Jewellery & handmade', 'Food & home chefs', 'Digital products', 'Coaches & freelancers'].map((c) => (
-            <span key={c} className="rounded-full border border-border bg-white px-5 py-2 text-sm font-semibold text-text shadow-sm">
-              {c}
-            </span>
-          ))}
-        </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="group overflow-hidden rounded-3xl shadow-card transition hover:-translate-y-1">
-              <img
-                src={`/assets/creators/creator-${i}.jpg`}
-                alt={`Creator portrait ${i}`}
-                className="h-72 w-full object-cover"
-                loading="lazy"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* PRICING TEASER */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#1f1147] via-[#2b0f3a] to-[#120b2e] py-16 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,60,172,0.3),transparent_60%)]" />
-        <div className="container-page relative flex flex-col items-center gap-6 text-center">
-          <Reveal variant="up">
-            <h2 className="text-3xl font-extrabold sm:text-4xl lg:text-5xl">Start free. Upgrade when you need more.</h2>
-            <p className="mt-3 text-lg text-white/80">
-              Simple pricing that grows with you. See full details on the pricing page.
-            </p>
-          </Reveal>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/register" className="rounded-full bg-white px-8 py-3 text-base font-bold text-[#2b0f3a] shadow-pop transition hover:-translate-y-1">
-              Create your page — free
-            </Link>
-            <Link to="/pricing" className="rounded-full border border-white/40 px-8 py-3 text-base font-semibold text-white transition hover:-translate-y-1 hover:bg-white/10">
-              View pricing
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="container-page py-20 lg:py-28">
-        <Reveal variant="up">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center rounded-full border border-border px-4 py-1 text-xs font-bold uppercase tracking-[0.2em] text-text-muted">
-              FAQs
-            </span>
-            <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-              Questions? We’ve got answers
-            </h2>
-          </div>
-        </Reveal>
-        <div className="mt-10">
-          <FAQ />
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="relative overflow-hidden">
-        <div className="container-page pb-20">
-          <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-r from-[#ff3cac] via-[#784ba0] to-[#2b86c5] p-10 text-white shadow-pop sm:p-14 lg:p-16">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_60%)]" />
-            <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-            <div className="absolute -right-20 top-0 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-            <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
+      {/* ============================= STATS ============================= */}
+      <section
+        className="mk-section relative py-14 text-white sm:py-16"
+        style={{ backgroundImage: 'var(--mk-grad-warm)' }}
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-noise" />
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-[rgba(255,255,255,0.35)]"
+        />
+        <div className="container-page relative grid grid-cols-2 gap-8 text-center lg:grid-cols-4">
+          {[
+            { value: '1 link', label: 'instead of six in your bio' },
+            { value: '₹0', label: 'to start, forever' },
+            { value: '3 min', label: 'to a page that is live' },
+            { value: '24/7', label: 'orders on autopilot' },
+          ].map((s, i) => (
+            <Reveal key={s.label} variant="up" delay={i * 60}>
               <div>
-                <h2 className="text-3xl font-extrabold sm:text-4xl lg:text-5xl">
+                <p className="mk-display text-[2.4rem] leading-none text-white sm:text-[3rem]">{s.value}</p>
+                <p className="mx-auto mt-2 max-w-[11rem] text-[12px] leading-snug text-[#ffe7dc]">
+                  {s.label}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================== CREATOR WALL ========================= */}
+      <section className="mk-section mk-mesh-soft py-20 lg:py-28">
+        <div className="container-page">
+          <Reveal variant="up">
+            <MkSectionHeading
+              eyebrow="Built for every kind of creator"
+              title={
+                <>
+                  Fashion, beauty, food, digital{' '}
+                  <span className="mk-gradient-text">and more</span>
+                </>
+              }
+              description="Join creators building beautiful pages with BLACKFRAM."
+            />
+          </Reveal>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+            {[
+              'Sarees & fashion',
+              'Beauty & skincare',
+              'Jewellery & handmade',
+              'Food & home chefs',
+              'Digital products',
+              'Coaches & freelancers',
+            ].map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-[rgba(26,18,11,0.09)] bg-white/80 px-4 py-1.5 text-xs font-semibold text-[#5d4c40] shadow-[0_2px_8px_-4px_rgba(48,16,64,0.3)] backdrop-blur transition-colors hover:border-[rgba(232,66,15,0.35)] hover:text-[#e8420f]"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {[
+              { i: 1, grad: 'from-[#ffb01f] to-[#ff5533]' },
+              { i: 2, grad: 'from-[#d9287d] to-[#7b3fe4]' },
+              { i: 3, grad: 'from-[#0e9f8a] to-[#3b4fe0]' },
+              { i: 4, grad: 'from-[#e8420f] to-[#d9287d]' },
+            ].map(({ i, grad }, idx) => (
+              <Reveal key={i} variant="up" delay={idx * 70}>
+                <div
+                  className={`group relative overflow-hidden rounded-[18px] bg-gradient-to-br ${grad} p-1.5 shadow-[0_30px_60px_-36px_rgba(48,16,64,0.6)] transition duration-300 hover:-translate-y-1.5`}
+                >
+                  <img
+                    src={`/assets/creators/creator-${i}.jpg`}
+                    alt={`Creator portrait ${i}`}
+                    className="h-56 w-full rounded-[13px] object-cover transition duration-500 group-hover:scale-[1.03] sm:h-72"
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <span className="absolute bottom-4 left-4 rounded-full bg-[rgba(26,18,11,0.72)] px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur">
+                    {['Fashion & sarees', 'Beauty & skincare', 'Food & home chefs', 'Digital products'][idx]}
+                  </span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================= PRICING TEASER ======================== */}
+      <section className="container-page pb-20 lg:pb-28">
+        <Reveal variant="up">
+          <div
+            className="relative overflow-hidden rounded-[28px] px-6 py-12 text-center text-white sm:px-12 sm:py-16"
+            style={{ backgroundImage: 'var(--mk-grad-ink)' }}
+          >
+            <div
+              aria-hidden="true"
+              className="mk-orb -left-20 top-0 h-[22rem] w-[22rem] bg-[rgba(232,66,15,0.55)]"
+            />
+            <div
+              aria-hidden="true"
+              className="mk-orb -right-16 bottom-0 h-[20rem] w-[20rem] bg-[rgba(123,63,228,0.5)]"
+            />
+            <div className="relative">
+              <MkKicker dark>Pricing</MkKicker>
+              <h2 className="mk-display mx-auto mt-5 max-w-2xl text-[2.2rem] leading-[1.02] text-white sm:text-[3.1rem]">
+                Start free. Upgrade when you{' '}
+                <span className="mk-gradient-text">outgrow</span> it.
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#d9c3ad]">
+                Simple pricing that grows with you — no lock-in, no surprise fees. See full details on
+                the pricing page.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <MkButton to="/register" variant="light" arrow>
+                  Create your page — free
+                </MkButton>
+                <MkButton to="/pricing" variant="outlineLight">
+                  View pricing
+                </MkButton>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* =============================== FAQ ============================= */}
+      <section className="mk-section bg-[#fffdf9] py-20 lg:py-28">
+        <div className="container-page">
+          <Reveal variant="up">
+            <MkSectionHeading
+              eyebrow="FAQs"
+              title={
+                <>
+                  Questions? We’ve got{' '}
+                  <span className="mk-gradient-text-cool">answers</span>
+                </>
+              }
+            />
+          </Reveal>
+          <div className="mt-10">
+            <FAQ />
+          </div>
+        </div>
+      </section>
+
+      {/* ============================ FINAL CTA ========================== */}
+      <section className="container-page pb-20 lg:pb-28">
+        <Reveal variant="up">
+          <div className="relative overflow-hidden rounded-[30px]">
+            <div aria-hidden="true" className="absolute inset-0" style={{ backgroundImage: 'var(--mk-grad-warm)' }} />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-noise" />
+            <div
+              aria-hidden="true"
+              className="absolute -right-16 -top-28 h-72 w-72 rounded-full bg-white/20 blur-2xl"
+            />
+            <div className="relative grid gap-10 p-7 sm:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-16">
+              <div>
+                <MkKicker dark>Your turn</MkKicker>
+                <h2 className="mk-display mt-5 max-w-xl text-[2.2rem] leading-[0.98] text-white sm:text-[3.1rem]">
                   Your audience is waiting. Give them a beautiful place to land.
                 </h2>
-                <p className="mt-4 text-lg text-white/90">
-                  Create your free Pehchaan page and start sharing your links, products, and WhatsApp in minutes.
+                <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-[#ffe7dc]">
+                  Create your free BLACKFRAM page and start sharing your links, products and WhatsApp in
+                  minutes.
                 </p>
-                <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <Link to="/register" className="rounded-full bg-white px-8 py-3 text-base font-bold text-[#2b0f3a] shadow-pop transition hover:-translate-y-1">
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <MkButton to="/register" variant="light" arrow>
                     Create your page — free
-                  </Link>
-            <Link to="/pricing" className="rounded-full border border-white/40 px-8 py-3 text-base font-semibold text-white transition hover:-translate-y-1 hover:bg-white/10" aria-label="View pricing">
-              See pricing
-            </Link>
+                  </MkButton>
+                  <MkButton to="/pricing" variant="outlineLight">
+                    View pricing
+                  </MkButton>
                 </div>
-                <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-white/80">
-                  <span className="flex items-center gap-2">
-                    <IconCheck /> Free forever
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <IconCheck /> No app to install
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <IconCheck /> Your own /u/ page
-                  </span>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[rgba(255,255,255,0.24)] pt-5 text-xs text-[#ffe7dc]">
+                  {['Free forever', 'No app to install', 'Your own /u/ page'].map((t) => (
+                    <span key={t} className="flex items-center gap-1.5">
+                      <span className="text-[#c9f5e4]">
+                        <IconCheck />
+                      </span>
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </div>
-              <div className="relative hidden lg:block">
-                <div className="float-slow overflow-hidden rounded-[2.5rem] shadow-pop">
-                  <img
-                    src="/assets/creators/creator-4.jpg"
-                    alt="Creator showcasing products"
-                    className="h-[420px] w-full object-cover"
-                    loading="lazy"
-                  />
+
+              <div className="relative hidden justify-center lg:flex">
+                <div className="mk-3d" style={{ transform: 'rotateY(-10deg) rotateX(4deg) rotateZ(2deg)' }}>
+                  <PhoneFrame width={300}>
+                    <StorefrontScreen variant={STOREFRONTS.katha} />
+                  </PhoneFrame>
+                </div>
+                <div
+                  aria-hidden="true"
+                  className="absolute -bottom-6 left-0 rounded-[12px] border border-[rgba(255,255,255,0.3)] bg-[rgba(26,18,11,0.5)] px-4 py-2.5 backdrop-blur"
+                >
+                  <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[#ffd9c7]">
+                    Page views
+                  </p>
+                  <p className="mt-1 font-display text-xl leading-none text-white">12,480</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
-      {/* SAMPLES */}
-      <section className="container-page pb-20">
+      <GradientRule />
+
+      {/* ============================= SAMPLES =========================== */}
+      <section className="container-page py-14">
         <Reveal variant="up">
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-text-muted">Try a sample page</p>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <MkKicker>Try a sample page</MkKicker>
+            <div className="flex flex-wrap items-center justify-center gap-3">
               {SAMPLES.map((s) => (
                 <Link
                   key={s.handle}
                   to={`/u/${s.handle}`}
-                  className="inline-flex items-center gap-3 rounded-full border border-border bg-white px-5 py-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-card"
+                  className="group inline-flex items-center gap-3 rounded-full border border-[rgba(26,18,11,0.09)] bg-white py-1.5 pl-1.5 pr-4 shadow-[0_10px_24px_-18px_rgba(48,16,64,0.5)] transition hover:-translate-y-0.5 hover:border-[rgba(26,18,11,0.18)] hover:shadow-[0_18px_34px_-18px_rgba(48,16,64,0.45)]"
                 >
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: s.color }}>
+                  <span
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full font-display text-sm text-white"
+                    style={{ backgroundColor: s.color }}
+                  >
                     {s.name[0]}
                   </span>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-text">{s.name}</p>
-                    <p className="text-xs text-text-muted">{s.tagline}</p>
+                    <p className="text-xs font-semibold text-[#1a120b]">{s.name}</p>
+                    <p className="text-[11px] text-[#6c5c50]">{s.tagline}</p>
                   </div>
-                  <IconExternal />
+                  <span className="text-[11px] text-[#8a7767] transition-colors group-hover:text-[#e8420f]">
+                    <IconExternal />
+                  </span>
                 </Link>
               ))}
             </div>

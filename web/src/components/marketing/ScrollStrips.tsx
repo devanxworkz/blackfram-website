@@ -30,11 +30,11 @@ export function Marquee({
 
 export function CreatorMarquee() {
   const items = [
-    { src: '/assets/creators/creator-1.jpg', alt: 'Indian fashion creator portrait' },
+    { src: '/assets/creators/creator-1.jpg', alt: 'Fashion creator portrait' },
     { src: '/assets/creators/creator-2.jpg', alt: 'Lifestyle creator portrait' },
     { src: '/assets/creators/creator-3.jpg', alt: 'Fashion creator on Instagram style' },
     { src: '/assets/creators/creator-4.jpg', alt: 'Content creator portrait' },
-    { src: '/assets/creators/creator-1.jpg', alt: 'Indian fashion creator portrait' },
+    { src: '/assets/creators/creator-1.jpg', alt: 'Fashion creator portrait' },
     { src: '/assets/creators/creator-2.jpg', alt: 'Lifestyle creator portrait' },
     { src: '/assets/creators/creator-3.jpg', alt: 'Fashion creator on Instagram style' },
     { src: '/assets/creators/creator-4.jpg', alt: 'Content creator portrait' },
@@ -101,7 +101,7 @@ export function BrandStrip() {
       {[...items, ...items].map((item, idx) => (
         <span
           key={`${item}-${idx}`}
-          className="marquee-item inline-flex items-center rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white/90 backdrop-blur"
+          className="marquee-item inline-flex items-center rounded-full border border-[rgba(247,242,233,0.28)] bg-[rgba(247,242,233,0.08)] px-5 py-2 text-sm font-semibold text-[#e9e0d2] backdrop-blur"
         >
           {item}
         </span>

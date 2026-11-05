@@ -22,7 +22,7 @@ const en: Dict = {
   'nav.pricing': 'Pricing',
   'nav.login': 'Log in',
   'nav.signup': 'Start free',
-  'hero.eyebrow': 'For Indian creators',
+  'hero.eyebrow': 'For creators',
   'hero.title': 'One link for everything you create',
   'hero.subtitle':
     'Links, products, WhatsApp and UPI on one fast, mobile-first page. Built for Instagram sellers, freelancers and small businesses.',
@@ -38,7 +38,7 @@ const en: Dict = {
   'common.copied': 'Copied',
   'public.contact': 'Chat on WhatsApp',
   'public.pay': 'Pay via UPI',
-  'public.payNote': 'Opens your UPI app. Pehchaan does not process or confirm the payment.',
+  'public.payNote': 'Opens your UPI app. BLACKFRAM does not process or confirm the payment.',
   'public.enquire': 'Enquire',
   'public.notFound': 'This page is not available',
   'public.notFoundHint': 'The creator may have unpublished it, or the link is wrong.',

@@ -121,7 +121,7 @@ authRouter.post(
       const resetUrl = `${config.appBaseUrl}/reset-password?token=${encodeURIComponent(token)}`;
       const result = await sendEmail({
         to: user.email,
-        subject: 'Reset your Pehchaan password',
+        subject: 'Reset your BLACKFRAM password',
         text: `Reset your password: ${resetUrl}\n\nThis link expires in 1 hour and can only be used once.`,
         html: `<p>Reset your password:</p><p><a href="${resetUrl}">Reset password</a></p><p>This link expires in 1 hour and can only be used once.</p>`,
       });

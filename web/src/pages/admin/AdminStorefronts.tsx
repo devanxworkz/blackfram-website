@@ -1,5 +1,16 @@
 import { useState, type FormEvent } from 'react';
-import { Avatar, Badge, Button, Card, EmptyState, Field, Input, Select, Skeleton } from '../../components/ui';
+import {
+  Avatar,
+  Badge,
+  Button,
+  EmptyState,
+  Field,
+  Input,
+  PageHeader,
+  Panel,
+  Select,
+  Skeleton,
+} from '../../components/ui';
 import { ErrorBanner, Pager, formatDate } from '../../components/admin/AdminBits';
 import { IconExternal } from '../../components/icons';
 import { api } from '../../lib/api';
@@ -37,13 +48,14 @@ export default function AdminStorefronts() {
   const rows = data?.rows ?? [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Storefronts</h2>
-        <p className="mt-1 text-sm text-text-muted">Every creator page on the platform, ranked by reach.</p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Admin"
+        title="Storefronts"
+        description="Every creator page on the platform, ranked by reach."
+      />
 
-      <Card>
+      <Panel className="p-5">
         <form onSubmit={onSearch} className="flex flex-wrap items-end gap-3">
           <div className="min-w-[220px] flex-1">
             <Field label="Search" htmlFor="storefront-search">
@@ -88,11 +100,11 @@ export default function AdminStorefronts() {
             )}
           </div>
         </form>
-      </Card>
+      </Panel>
 
       {error && <ErrorBanner message={error} />}
 
-      <Card className="overflow-x-auto p-0">
+      <Panel className="overflow-x-auto p-0">
         {loading || !data ? (
           <div className="space-y-2 p-5">
             {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-10" />)}
@@ -104,43 +116,43 @@ export default function AdminStorefronts() {
         ) : (
           <table className="w-full min-w-[760px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface text-text-muted">
-                <th scope="col" className="p-4 font-semibold">Storefront</th>
-                <th scope="col" className="p-4 font-semibold">State</th>
-                <th scope="col" className="p-4 font-semibold">Published</th>
-                <th scope="col" className="p-4 font-semibold">Views</th>
-                <th scope="col" className="p-4 font-semibold">Links</th>
-                <th scope="col" className="p-4 font-semibold">Products</th>
-                <th scope="col" className="p-4 font-semibold">Open</th>
+              <tr className="border-b border-border bg-surface">
+                {['Storefront', 'State', 'Published', 'Views', 'Links', 'Products', 'Open'].map((h) => (
+                  <th key={h} scope="col" className="px-4 py-3">
+                    <span className="label-mono text-[10px]">{h}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {rows.map((r) => (
-                <tr key={r.tenantId} className="border-b border-border/60">
-                  <td className="p-4">
+                <tr key={r.tenantId} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                  <td className="px-4 py-3.5">
                     <div className="flex items-center gap-3">
                       <Avatar src={r.avatarUrl} name={r.displayName ?? r.username ?? '?'} size={32} />
                       <div className="min-w-0">
-                        <p className="truncate font-medium">{r.displayName ?? 'Untitled'}</p>
-                        <p className="font-mono text-xs text-text-muted">{r.username ? `/u/${r.username}` : '—'}</p>
+                        <p className="truncate font-semibold text-text">{r.displayName ?? 'Untitled'}</p>
+                        <p className="font-mono text-[11px] text-text-muted">
+                          {r.username ? `/u/${r.username}` : '—'}
+                        </p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4">
-                    {r.isPublished ? <Badge tone="success">Live</Badge> : <Badge tone="muted">Draft</Badge>}
+                  <td className="px-4 py-3.5">
+                    {r.isPublished ? <Badge tone="success" dot>Live</Badge> : <Badge tone="muted">Draft</Badge>}
                   </td>
-                  <td className="p-4 text-text-muted">{formatDate(r.publishedAt)}</td>
-                  <td className="p-4 font-semibold">{formatNumber(r.views)}</td>
-                  <td className="p-4">{formatNumber(r.links)}</td>
-                  <td className="p-4">{formatNumber(r.products)}</td>
-                  <td className="p-4">
+                  <td className="px-4 py-3.5 text-text-muted">{formatDate(r.publishedAt)}</td>
+                  <td className="px-4 py-3.5 font-semibold tabular-nums text-text">{formatNumber(r.views)}</td>
+                  <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(r.links)}</td>
+                  <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(r.products)}</td>
+                  <td className="px-4 py-3.5">
                     {r.username && r.isPublished ? (
                       <a
                         href={`/u/${r.username}`}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Open /u/${r.username}`}
-                        className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline-offset-4 hover:underline"
                       >
                         <IconExternal /> Visit
                       </a>
@@ -153,7 +165,7 @@ export default function AdminStorefronts() {
             </tbody>
           </table>
         )}
-      </Card>
+      </Panel>
 
       {data && <Pager page={data.page} pageSize={data.pageSize} total={data.total} onPage={setPage} />}
     </div>

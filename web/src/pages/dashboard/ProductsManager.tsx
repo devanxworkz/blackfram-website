@@ -1,16 +1,20 @@
 import { useState, type FormEvent } from 'react';
 import {
+  Badge,
   Button,
-  Card,
   Dialog,
+  EmptyState,
   Field,
+  IconButton,
   Input,
+  PageHeader,
+  Panel,
   Skeleton,
   Textarea,
   Toggle,
   cx,
 } from '../../components/ui';
-import { IconDown, IconGrip, IconPlus, IconTrash, IconUp } from '../../components/icons';
+import { IconBag, IconDown, IconGrip, IconPlus, IconTrash, IconUp } from '../../components/icons';
 import { useToast } from '../../components/Toast';
 import { ApiError, api } from '../../lib/api';
 import { useAsync } from '../../lib/useAsync';
@@ -157,92 +161,137 @@ export default function ProductsManager() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold">Products</h2>
-          <p className="mt-1 text-sm text-text-muted">List what you sell with a price in ₹ and a link.</p>
-        </div>
-        <Button onClick={openAdd}>
-          <span className="flex items-center gap-1.5"><IconPlus /> Add product</span>
-        </Button>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Your page"
+        title="Products"
+        description="List what you sell with a price in ₹ and a destination link. Buyers tap through to pay or enquire."
+        actions={
+          <Button onClick={openAdd}>
+            <IconPlus />
+            Add product
+          </Button>
+        }
+      />
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-[88px]" />
+          ))}
         </div>
       ) : products.length === 0 ? (
-        <Card className="text-center">
-          <p className="font-semibold">No products yet</p>
-          <p className="mt-1 text-sm text-text-muted">Add a product so visitors know what you sell.</p>
-          <Button className="mt-4" onClick={openAdd}>
-            <span className="flex items-center gap-1.5"><IconPlus /> Add product</span>
-          </Button>
-        </Card>
+        <EmptyState
+          icon={<IconBag />}
+          title="No products yet"
+          hint="Add a product so visitors know what you sell — a digital download, a service, or a physical item."
+          action={
+            <Button onClick={openAdd}>
+              <IconPlus />
+              Add product
+            </Button>
+          }
+        />
       ) : (
-        <ul className="space-y-3">
-          {products.map((p, i) => (
-            <li key={p.id}>
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-elevated p-3 shadow-card">
-                <span className="cursor-grab text-text-muted" aria-hidden="true"><IconGrip /></span>
-                {p.imageUrl ? (
-                  <img src={p.imageUrl} alt="" className="h-12 w-12 shrink-0 rounded-md object-cover" />
-                ) : (
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-accent-soft text-lg font-bold text-accent">
-                    {p.title.charAt(0).toUpperCase()}
-                  </span>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className={cx('truncate font-semibold', !p.isActive && 'text-text-muted line-through')}>
-                    {p.title}
-                  </p>
-                  <p className="truncate text-xs text-text-muted">
-                    {formatINR(p.pricePaise) ?? 'No price'} · {hostOf(p.destinationUrl)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface disabled:opacity-30"
-                    aria-label={`Move ${p.title} up`}
-                    disabled={i === 0}
-                    onClick={() => void move(i, -1)}
-                  >
-                    <IconUp />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface disabled:opacity-30"
-                    aria-label={`Move ${p.title} down`}
-                    disabled={i === products.length - 1}
-                    onClick={() => void move(i, 1)}
-                  >
-                    <IconDown />
-                  </button>
-                  <Toggle
-                    checked={p.isActive}
-                    onChange={() => void toggleActive(p)}
-                    label={`${p.isActive ? 'Hide' : 'Show'} ${p.title}`}
-                  />
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface hover:text-danger"
-                    aria-label={`Delete ${p.title}`}
-                    onClick={() => void remove(p)}
-                  >
-                    <IconTrash />
-                  </button>
-                </div>
-              </div>
-              <div className="mt-1 ml-3">
-                <Button size="sm" variant="ghost" onClick={() => openEdit(p)}>
-                  Edit details
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <>
+          <div className="flex items-center justify-between">
+            <p className="label-mono">{products.length} product{products.length === 1 ? '' : 's'}</p>
+            <p className="text-xs text-text-muted">Top of the list appears first</p>
+          </div>
+
+          <Panel className="overflow-hidden p-0">
+            <ul className="divide-y divide-border">
+              {products.map((p, i) => (
+                <li
+                  key={p.id}
+                  className={cx(
+                    'group transition-colors duration-150 hover:bg-[#fbf7f0]',
+                    !p.isActive && 'bg-[#f9f5ee]',
+                  )}
+                >
+                  <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <span className="hidden cursor-grab text-[#b3a795] sm:block" aria-hidden="true">
+                        <IconGrip />
+                      </span>
+                      {p.imageUrl ? (
+                        <img
+                          src={p.imageUrl}
+                          alt=""
+                          className="h-14 w-14 shrink-0 rounded-[10px] border border-border object-cover"
+                        />
+                      ) : (
+                        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[10px] border border-accent-line bg-accent-soft font-display text-xl text-accent">
+                          {p.title.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className={cx(
+                              'truncate text-sm font-semibold',
+                              !p.isActive && 'text-text-muted line-through',
+                            )}
+                          >
+                            {p.title}
+                          </p>
+                          {!p.isActive && <Badge>Hidden</Badge>}
+                        </div>
+                        <p className="mt-0.5 truncate text-[11px] text-text-muted">
+                          {formatINR(p.pricePaise) ?? 'No price'} · {hostOf(p.destinationUrl)}
+                        </p>
+                        {p.description && (
+                          <p className="mt-1 line-clamp-1 text-[11px] text-text-muted">{p.description}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 pl-[68px] sm:justify-end sm:pl-0">
+                      <div className="flex items-center gap-0.5">
+                        <IconButton
+                          size="sm"
+                          label={`Move ${p.title} up`}
+                          disabled={i === 0}
+                          onClick={() => void move(i, -1)}
+                        >
+                          <IconUp />
+                        </IconButton>
+                        <IconButton
+                          size="sm"
+                          label={`Move ${p.title} down`}
+                          disabled={i === products.length - 1}
+                          onClick={() => void move(i, 1)}
+                        >
+                          <IconDown />
+                        </IconButton>
+                        <IconButton
+                          size="sm"
+                          label={`Delete ${p.title}`}
+                          className="hover:text-danger"
+                          onClick={() => void remove(p)}
+                        >
+                          <IconTrash />
+                        </IconButton>
+                      </div>
+                      <Toggle
+                        checked={p.isActive}
+                        onChange={() => void toggleActive(p)}
+                        label={`${p.isActive ? 'Hide' : 'Show'} ${p.title}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openEdit(p)}
+                        className="ml-1 rounded-[6px] px-2 py-1 text-[11px] font-semibold text-accent transition-colors hover:bg-accent-soft"
+                      >
+                        Edit details
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Panel>
+        </>
       )}
 
       <Dialog
@@ -306,8 +355,11 @@ export default function ProductsManager() {
               required
             />
           </Field>
-          <label className="flex items-center justify-between rounded-md border border-border px-3 py-2">
-            <span className="text-sm font-semibold">Visible on my page</span>
+          <label className="flex items-center justify-between gap-4 rounded-[10px] border border-border bg-bg px-3.5 py-3">
+            <span>
+              <span className="block text-sm font-semibold text-text">Visible on my page</span>
+              <span className="mt-0.5 block text-xs text-text-muted">Hidden products stay saved.</span>
+            </span>
             <Toggle
               checked={draft?.isActive ?? true}
               onChange={(v) => setDraft((d) => (d ? { ...d, isActive: v } : d))}

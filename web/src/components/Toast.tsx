@@ -40,9 +40,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const api = useMemo(() => ({ push }), [push]);
 
   const tones: Record<Tone, string> = {
-    success: 'border-success/30 bg-green-50 text-success',
-    error: 'border-danger/30 bg-red-50 text-danger',
+    success: 'border-[#bfd9c8] bg-success-soft text-success',
+    error: 'border-[#e8c4bf] bg-danger-soft text-danger',
     info: 'border-border bg-elevated text-text',
+  };
+  const dots: Record<Tone, string> = {
+    success: 'bg-success',
+    error: 'bg-danger',
+    info: 'bg-text-muted',
   };
 
   return (
@@ -57,14 +62,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             role="status"
-            className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border px-4 py-3 text-sm font-medium shadow-pop ${tones[t.tone]}`}
+            className={`animate-toast-in pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-[10px] border px-4 py-3 text-sm font-medium shadow-raised ${tones[t.tone]}`}
           >
-            <span className="flex-1">{t.message}</span>
+            <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dots[t.tone]}`} aria-hidden="true" />
+            <span className="flex-1 leading-relaxed">{t.message}</span>
             <button
               type="button"
               onClick={() => remove(t.id)}
               aria-label="Dismiss notification"
-              className="text-text-muted hover:text-text"
+              className="-mr-1 rounded-[6px] px-1.5 py-0.5 text-current opacity-60 transition-opacity hover:opacity-100"
             >
               ✕
             </button>

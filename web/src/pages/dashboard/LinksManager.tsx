@@ -1,16 +1,27 @@
 import { useState, type FormEvent } from 'react';
 import {
+  Badge,
   Button,
-  Card,
   Dialog,
+  EmptyState,
   Field,
+  IconButton,
   Input,
+  PageHeader,
+  Panel,
   Select,
   Skeleton,
   Toggle,
   cx,
 } from '../../components/ui';
-import { IconGrip, IconPlus, IconTrash, IconUp, IconDown } from '../../components/icons';
+import {
+  IconDown,
+  IconGrip,
+  IconLink,
+  IconPlus,
+  IconTrash,
+  IconUp,
+} from '../../components/icons';
 import { ICON_KEYS, LinkIcon } from '../../components/LinkIcon';
 import { useToast } from '../../components/Toast';
 import { ApiError, api } from '../../lib/api';
@@ -132,92 +143,139 @@ export default function LinksManager() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-extrabold">Links</h2>
-          <p className="mt-1 text-sm text-text-muted">Add anywhere you exist online. Drag order with the arrows.</p>
-        </div>
-        <Button onClick={openAdd}>
-          <span className="flex items-center gap-1.5"><IconPlus /> Add link</span>
-        </Button>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Your page"
+        title="Links"
+        description="Add anywhere you exist online. Use the arrows to change the order visitors see."
+        actions={
+          <Button onClick={openAdd}>
+            <IconPlus />
+            Add link
+          </Button>
+        }
+      />
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20" />)}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-[76px]" />
+          ))}
         </div>
       ) : links.length === 0 ? (
-        <Card className="text-center">
-          <p className="font-semibold">No links yet</p>
-          <p className="mt-1 text-sm text-text-muted">Add your first link — Instagram is a good start.</p>
-          <Button className="mt-4" onClick={openAdd}>
-            <span className="flex items-center gap-1.5"><IconPlus /> Add link</span>
-          </Button>
-        </Card>
+        <EmptyState
+          icon={<IconLink />}
+          title="No links yet"
+          hint="Add your first link — Instagram is a good start. Every link becomes a button on your page."
+          action={
+            <Button onClick={openAdd}>
+              <IconPlus />
+              Add link
+            </Button>
+          }
+        />
       ) : (
-        <ul className="space-y-3">
-          {links.map((link, i) => (
-            <li key={link.id}>
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-elevated p-3 shadow-card">
-                <span className="cursor-grab text-text-muted" aria-hidden="true"><IconGrip /></span>
-                <span
+        <>
+          <div className="flex items-center justify-between">
+            <p className="label-mono">{links.length} link{links.length === 1 ? '' : 's'}</p>
+            <p className="text-xs text-text-muted">Top of the list appears first</p>
+          </div>
+
+          <Panel className="overflow-hidden p-0">
+            <ul className="divide-y divide-border">
+              {links.map((link, i) => (
+                <li
+                  key={link.id}
                   className={cx(
-                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-md',
-                    link.isActive ? 'bg-accent-soft text-accent' : 'bg-surface text-text-muted',
+                    'group transition-colors duration-150 hover:bg-[#fbf7f0]',
+                    !link.isActive && 'bg-[#f9f5ee]',
                   )}
                 >
-                  <LinkIcon name={link.icon} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className={cx('truncate font-semibold', !link.isActive && 'text-text-muted line-through')}>
-                    {link.title}
-                  </p>
-                  <p className="truncate text-xs text-text-muted">{hostOf(link.url)}</p>
-                </div>
-                <span className="hidden text-xs text-text-muted sm:block">{link.clickCount} clicks</span>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface disabled:opacity-30"
-                    aria-label={`Move ${link.title} up`}
-                    disabled={i === 0}
-                    onClick={() => void move(i, -1)}
-                  >
-                    <IconUp />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface disabled:opacity-30"
-                    aria-label={`Move ${link.title} down`}
-                    disabled={i === links.length - 1}
-                    onClick={() => void move(i, 1)}
-                  >
-                    <IconDown />
-                  </button>
-                  <Toggle
-                    checked={link.isActive}
-                    onChange={() => void toggleActive(link)}
-                    label={`${link.isActive ? 'Hide' : 'Show'} ${link.title}`}
-                  />
-                  <button
-                    type="button"
-                    className="rounded p-1.5 text-text-muted hover:bg-surface hover:text-danger"
-                    aria-label={`Delete ${link.title}`}
-                    onClick={() => void remove(link)}
-                  >
-                    <IconTrash />
-                  </button>
-                </div>
-              </div>
-              <div className="mt-1 ml-3">
-                <Button size="sm" variant="ghost" onClick={() => openEdit(link)}>
-                  Edit details
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                  <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <span className="hidden cursor-grab text-[#b3a795] sm:block" aria-hidden="true">
+                        <IconGrip />
+                      </span>
+                      <span
+                        className={cx(
+                          'flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border text-[18px]',
+                          link.isActive
+                            ? 'border-accent-line bg-accent-soft text-accent'
+                            : 'border-border bg-surface text-text-muted',
+                        )}
+                      >
+                        <LinkIcon name={link.icon} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className={cx(
+                              'truncate text-sm font-semibold',
+                              !link.isActive && 'text-text-muted line-through',
+                            )}
+                          >
+                            {link.title}
+                          </p>
+                          {!link.isActive && <Badge>Hidden</Badge>}
+                        </div>
+                        <p className="mt-0.5 truncate font-mono text-[11px] text-text-muted">
+                          {hostOf(link.url)}
+                        </p>
+                        <p className="mt-1 text-[11px] text-text-muted sm:hidden">
+                          {link.clickCount} clicks
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 pl-[52px] sm:justify-end sm:pl-0">
+                      <span className="hidden w-20 text-right text-[11px] text-text-muted sm:block">
+                        {link.clickCount} clicks
+                      </span>
+                      <div className="flex items-center gap-0.5">
+                        <IconButton
+                          size="sm"
+                          label={`Move ${link.title} up`}
+                          disabled={i === 0}
+                          onClick={() => void move(i, -1)}
+                        >
+                          <IconUp />
+                        </IconButton>
+                        <IconButton
+                          size="sm"
+                          label={`Move ${link.title} down`}
+                          disabled={i === links.length - 1}
+                          onClick={() => void move(i, 1)}
+                        >
+                          <IconDown />
+                        </IconButton>
+                        <IconButton
+                          size="sm"
+                          label={`Delete ${link.title}`}
+                          className="hover:text-danger"
+                          onClick={() => void remove(link)}
+                        >
+                          <IconTrash />
+                        </IconButton>
+                      </div>
+                      <Toggle
+                        checked={link.isActive}
+                        onChange={() => void toggleActive(link)}
+                        label={`${link.isActive ? 'Hide' : 'Show'} ${link.title}`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => openEdit(link)}
+                        className="ml-1 rounded-[6px] px-2 py-1 text-[11px] font-semibold text-accent transition-colors hover:bg-accent-soft"
+                      >
+                        Edit details
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Panel>
+        </>
       )}
 
       <Dialog
@@ -268,8 +326,11 @@ export default function LinksManager() {
               ))}
             </Select>
           </Field>
-          <label className="flex items-center justify-between rounded-md border border-border px-3 py-2">
-            <span className="text-sm font-semibold">Visible on my page</span>
+          <label className="flex items-center justify-between gap-4 rounded-[10px] border border-border bg-bg px-3.5 py-3">
+            <span>
+              <span className="block text-sm font-semibold text-text">Visible on my page</span>
+              <span className="mt-0.5 block text-xs text-text-muted">Hidden links keep their clicks.</span>
+            </span>
             <Toggle
               checked={draft?.isActive ?? true}
               onChange={(v) => setDraft((d) => (d ? { ...d, isActive: v } : d))}

@@ -1,6 +1,15 @@
 import { Link } from 'react-router-dom';
-import { Badge, Card, EmptyState, Skeleton, StatCard } from '../../components/ui';
+import {
+  Badge,
+  EmptyState,
+  PageHeader,
+  Panel,
+  SectionHeader,
+  Skeleton,
+  Stat,
+} from '../../components/ui';
 import { BarChart, ErrorBanner, formatDateTime } from '../../components/admin/AdminBits';
+import { IconArrowRight } from '../../components/icons';
 import { api } from '../../lib/api';
 import { useAsync } from '../../lib/useAsync';
 import { formatNumber } from '../../lib/format';
@@ -10,11 +19,12 @@ export default function AdminAnalytics() {
   const { data, loading, error } = useAsync(() => api.get<AdminAnalyticsData>('/api/admin/analytics'));
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-extrabold">Analytics</h2>
-        <p className="mt-1 text-sm text-text-muted">Platform-wide reach, measured from real page views and clicks.</p>
-      </div>
+    <div className="space-y-7">
+      <PageHeader
+        eyebrow="Admin"
+        title="Analytics"
+        description="Platform-wide reach, measured from real page views and clicks."
+      />
 
       {error && <ErrorBanner message={error} />}
 
@@ -27,27 +37,39 @@ export default function AdminAnalytics() {
         </div>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard label="Total views" value={formatNumber(data.totals.views)} hint={`${formatNumber(data.totals.views_7d)} this week`} />
-            <StatCard label="Views · 30 days" value={formatNumber(data.totals.views_30d)} />
-            <StatCard label="Link clicks" value={formatNumber(data.totals.clicks)} />
-            <StatCard label="Published pages" value={formatNumber(data.totals.published)} />
-          </div>
+          <Panel className="p-6">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+              <Stat
+                label="Total views"
+                value={formatNumber(data.totals.views)}
+                hint={`${formatNumber(data.totals.views_7d)} this week`}
+              />
+              <Stat label="Views · 30 days" value={formatNumber(data.totals.views_30d)} hint="Rolling window" />
+              <Stat label="Link clicks" value={formatNumber(data.totals.clicks)} hint="All time" />
+              <Stat label="Published pages" value={formatNumber(data.totals.published)} hint="Visible to visitors" />
+            </div>
+          </Panel>
 
-          <Card>
-            <h3 className="text-lg font-bold">Page views · last 30 days</h3>
+          <Panel className="p-6">
+            <SectionHeader
+              eyebrow="Reach"
+              title="Page views · last 30 days"
+              description="Aggregated across every storefront."
+            />
             {data.totals.views === 0 ? (
-              <p className="mt-4 text-sm text-text-muted">No page views recorded yet.</p>
+              <p className="mt-5 text-sm text-text-muted">No page views recorded yet.</p>
             ) : (
-              <div className="mt-4">
+              <div className="mt-6">
                 <BarChart series={data.series} ariaLabel="Page views over the last 30 days" height={200} />
               </div>
             )}
-          </Card>
+          </Panel>
 
-          <Card className="overflow-x-auto p-0">
-            <div className="border-b border-border p-4">
-              <h3 className="text-base font-bold">Top storefronts by views</h3>
+          <Panel className="overflow-x-auto p-0">
+            <div className="border-b border-border px-5 py-4">
+              <h2 className="font-display text-lg leading-tight tracking-[-0.01em] text-text">
+                Top storefronts by views
+              </h2>
             </div>
             {data.topCreators.length === 0 ? (
               <div className="p-6">
@@ -56,42 +78,46 @@ export default function AdminAnalytics() {
             ) : (
               <table className="w-full min-w-[640px] border-collapse text-left text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-surface text-text-muted">
-                    <th scope="col" className="p-4 font-semibold">#</th>
-                    <th scope="col" className="p-4 font-semibold">Storefront</th>
-                    <th scope="col" className="p-4 font-semibold">Status</th>
-                    <th scope="col" className="p-4 font-semibold">Views</th>
-                    <th scope="col" className="p-4 font-semibold">Clicks</th>
-                    <th scope="col" className="p-4 font-semibold">Links</th>
-                    <th scope="col" className="p-4 font-semibold">Products</th>
+                  <tr className="border-b border-border bg-surface">
+                    {['#', 'Storefront', 'Status', 'Views', 'Clicks', 'Links', 'Products'].map((h) => (
+                      <th key={h} scope="col" className="px-4 py-3">
+                        <span className="label-mono text-[10px]">{h}</span>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-border">
                   {data.topCreators.map((c, i) => (
-                    <tr key={c.tenantId} className="border-b border-border/60">
-                      <td className="p-4 text-text-muted">{i + 1}</td>
-                      <td className="p-4">
-                        <p className="font-medium">{c.displayName ?? 'Untitled'}</p>
-                        <p className="font-mono text-xs text-text-muted">{c.username ? `/u/${c.username}` : '—'}</p>
+                    <tr key={c.tenantId} className="transition-colors duration-150 hover:bg-[#fbf7f0]">
+                      <td className="px-4 py-3.5 font-mono text-xs text-text-muted">{i + 1}</td>
+                      <td className="px-4 py-3.5">
+                        <p className="font-semibold text-text">{c.displayName ?? 'Untitled'}</p>
+                        <p className="font-mono text-[11px] text-text-muted">
+                          {c.username ? `/u/${c.username}` : '—'}
+                        </p>
                       </td>
-                      <td className="p-4">
-                        {c.isPublished ? <Badge tone="success">Live</Badge> : <Badge tone="muted">Draft</Badge>}
+                      <td className="px-4 py-3.5">
+                        {c.isPublished ? <Badge tone="success" dot>Live</Badge> : <Badge tone="muted">Draft</Badge>}
                       </td>
-                      <td className="p-4 font-semibold">{formatNumber(c.views)}</td>
-                      <td className="p-4">{formatNumber(c.clicks)}</td>
-                      <td className="p-4">{formatNumber(c.links)}</td>
-                      <td className="p-4">{formatNumber(c.products)}</td>
+                      <td className="px-4 py-3.5 font-semibold tabular-nums text-text">{formatNumber(c.views)}</td>
+                      <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(c.clicks)}</td>
+                      <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(c.links)}</td>
+                      <td className="px-4 py-3.5 tabular-nums text-text-muted">{formatNumber(c.products)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
-          </Card>
+          </Panel>
 
-          <p className="text-xs text-text-muted">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-text-muted">
             Snapshot generated {formatDateTime(new Date().toISOString())} from live data.
-            <Link to="/admin/storefronts" className="ml-1 font-semibold text-accent hover:underline">
+            <Link
+              to="/admin/storefronts"
+              className="inline-flex items-center gap-1 font-semibold text-accent underline-offset-4 hover:underline"
+            >
               Browse all storefronts
+              <IconArrowRight />
             </Link>
           </p>
         </>
