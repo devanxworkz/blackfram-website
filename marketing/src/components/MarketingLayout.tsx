@@ -4,6 +4,7 @@ import { useI18n } from './I18nProvider';
 import { Brand } from './Brand';
 import { IconArrowRight, IconClose, IconMenu } from './icons';
 import { LOCALES, LOCALE_LABELS, type Locale } from '../lib/i18n';
+import { APP_URL } from '../lib/appUrl';
 
 export function MarketingLayout({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
@@ -63,21 +64,21 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
                 </option>
               ))}
             </select>
-            <Link
-              to="/login"
+            <a
+              href={`${APP_URL}/login`}
               className="text-[13px] font-semibold text-text transition-colors hover:text-accent"
             >
               {t('nav.login', 'Log in')}
-            </Link>
-            <Link
-              to="/register"
+            </a>
+            <a
+              href={`${APP_URL}/register`}
               className="mk-btn mk-btn-sm mk-btn-primary"
             >
               {t('nav.signup', 'Start free')}
               <span className="text-[14px]">
                 <IconArrowRight />
               </span>
-            </Link>
+            </a>
           </div>
 
           <button
@@ -134,13 +135,13 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
                 >
                   {t('nav.login', 'Log in')}
                 </Link>
-                <Link
-                  to="/register"
+                <a
+                  href={`${APP_URL}/register`}
                   onClick={() => setOpen(false)}
                   className="mk-btn mk-btn-sm mk-btn-primary"
                 >
                   {t('nav.signup', 'Start free')}
-                </Link>
+                </a>
               </div>
             </nav>
           </div>

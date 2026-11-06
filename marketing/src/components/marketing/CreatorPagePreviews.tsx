@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import { IconArrowRight, IconCheck, IconExternal } from '../../components/icons';
 import { ProductTile, STOREFRONTS, type StoreVariant } from './MarketingKit';
+import { APP_URL } from '../../lib/appUrl';
 
 const ORDER: StoreVariant[] = [STOREFRONTS.meera, STOREFRONTS.ananya, STOREFRONTS.katha];
 
@@ -106,14 +106,14 @@ function StoreCard({ page, index }: { page: StoreVariant; index: number }) {
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-[rgba(26,18,11,0.07)] pt-4">
-          <Link
-            to={`/u/${page.handle}`}
+          <a
+            href={`${APP_URL}/u/${page.handle}`}
             className="inline-flex items-center gap-1.5 text-[12px] font-bold text-[#1a120b] underline-offset-4 hover:underline"
             style={{ color: page.accent }}
           >
             View page
             <IconArrowRight />
-          </Link>
+          </a>
           <span className="inline-flex items-center gap-1 rounded-full bg-[#fff4e8] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.12em] text-[#8a7767]">
             <IconExternal />
             blackfram.co/u/{page.handle}

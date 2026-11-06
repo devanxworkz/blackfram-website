@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import { IconArrowRight, IconCheck } from '../../components/icons';
 import { FAQ as LandingFAQ } from '../../components/marketing/FAQ';
 import { MkButton, MkKicker } from '../../components/marketing/MarketingKit';
+import { APP_URL } from '../../lib/appUrl';
 
 interface Plan {
   name: string;
@@ -21,8 +21,7 @@ const PLANS: Plan[] = [
     cadence: 'forever',
     blurb: 'For creators just getting started.',
     cta: 'Create your page',
-    to: '/register',
-    features: [
+    to: `${APP_URL}/register`,    features: [
       'Up to 10 links',
       'Up to 3 products',
       'All themes & layouts',
@@ -37,8 +36,7 @@ const PLANS: Plan[] = [
     cadence: 'per month',
     blurb: 'For creators who are growing and selling.',
     cta: 'Start with Pro',
-    to: '/register?plan=pro',
-    highlight: true,
+    to: `${APP_URL}/register?plan=pro`,    highlight: true,
     features: [
       'Unlimited links',
       'Unlimited products',
@@ -81,7 +79,7 @@ export default function Pricing() {
             rupees.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <MkButton to="/register" arrow>
+            <MkButton href={`${APP_URL}/register`} arrow>
               Create your page — free
             </MkButton>
             <MkButton to="/features" variant="ghost">
@@ -182,8 +180,8 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                <Link
-                  to={plan.to}
+                <a
+                  href={plan.to}
                   className={`relative mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-[12px] px-6 text-center text-sm font-semibold transition ${
                     plan.highlight
                       ? 'bg-[#fff9f2] text-[#1a120b] hover:bg-white'
@@ -192,7 +190,7 @@ export default function Pricing() {
                 >
                   {plan.cta}
                   <IconArrowRight />
-                </Link>
+                </a>
               </div>
             ))}
           </div>
@@ -286,7 +284,7 @@ export default function Pricing() {
               Create your free BLACKFRAM page and share it in minutes.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <MkButton to="/register" variant="light" arrow>
+              <MkButton href={`${APP_URL}/register`} variant="light" arrow>
                 Create your page — free
               </MkButton>
               <MkButton to="/features" variant="outlineLight">

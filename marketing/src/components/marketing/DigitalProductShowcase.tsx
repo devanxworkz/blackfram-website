@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { APP_URL } from '../../lib/appUrl';
 
 function CreatorContentOsPreview() {
   return (
@@ -316,12 +316,12 @@ export function DigitalProductShowcase() {
                 >
                   Preview
                 </button>
-                <Link
-                  to="/register"
+                <a
+                  href={`${APP_URL}/register`}
                   className="inline-flex h-9 items-center rounded-[8px] bg-[#1a120b] px-4 text-xs font-semibold text-[#fff6ea] transition-colors hover:bg-[#2c1e16]"
                 >
                   Sell this
-                </Link>
+                </a>
               </div>
             </div>
           </div>
@@ -365,18 +365,18 @@ export function DigitalProductShowcase() {
               <div className="flex flex-col gap-3 p-4">
                 <p className="text-sm font-semibold text-[#1a120b]">{t.title}</p>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Link
-                    to="/register"
+                  <a
+                    href={`${APP_URL}/register`}
                     className="inline-flex h-8 items-center rounded-[7px] border border-[rgba(26,18,11,0.12)] bg-white px-3 text-[11px] font-semibold text-[#1a120b] transition-colors hover:border-[rgba(26,18,11,0.24)] hover:bg-[#fffaf4]"
                   >
                     Preview template
-                  </Link>
-                  <Link
-                    to="/register"
+                  </a>
+                  <a
+                    href={`${APP_URL}/register`}
                     className="inline-flex h-8 items-center rounded-[7px] bg-[#1a120b] px-3 text-[11px] font-semibold text-[#fff6ea] transition-colors hover:bg-[#2c1e16]"
                   >
                     Use this template
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

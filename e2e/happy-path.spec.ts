@@ -15,20 +15,11 @@ async function register(page: Page, opts: { name: string; username: string; emai
 }
 
 test.describe('BLACKFRAM happy paths', () => {
-  test('landing page renders the hero and calls to action', async ({ page }) => {
+  test('app root redirects to the dashboard/login flow', async ({ page }) => {
     await page.goto('/');
-    await expect(
-      page.getByRole('heading', { name: 'One link for everything you create.' }),
-    ).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Create your page — free' }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: 'See pricing' })).toBeVisible();
-  });
-
-  test('pricing and legal pages load', async ({ page }) => {
-    await page.goto('/pricing');
-    await expect(page.getByRole('heading', { name: 'Simple pricing' })).toBeVisible();
-    await page.goto('/privacy');
-    await expect(page.getByRole('heading', { name: 'Privacy policy' })).toBeVisible();
+    await expect(page).toHaveURL(/\/(dashboard|login)/);
+    await page.goto('/login');
+    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
   });
 
   test('a creator can register, add a link, publish and see the public page', async ({ page }) => {

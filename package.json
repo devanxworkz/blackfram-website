@@ -5,13 +5,16 @@
   "description": "Pehchaan — a multi-tenant link-in-bio SaaS for Indian creators (original build inspired by Beacons' core loop).",
   "workspaces": [
     "server",
-    "web"
+    "web",
+    "marketing"
   ],
   "scripts": {
     "dev": "concurrently -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "npm --workspace server run dev",
     "dev:web": "npm --workspace web run dev",
-    "build": "npm --workspace web run build && npm --workspace server run build",
+    "dev:marketing": "npm --workspace marketing run dev",
+    "build:marketing": "npm --workspace marketing run build",
+    "build": "npm --workspace web run build && npm --workspace marketing run build && npm --workspace server run build",
     "start": "npm --workspace server run start",
     "migrate": "npm --workspace server run migrate",
     "seed": "npm --workspace server run seed",

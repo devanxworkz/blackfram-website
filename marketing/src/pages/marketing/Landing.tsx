@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { APP_URL } from '../../lib/appUrl';
 import { Reveal } from '../../components/marketing/Reveal';
 import { CreatorMarquee, ProductMarquee, BrandStrip } from '../../components/marketing/ScrollStrips';
 import { CreatorPagePreviews } from '../../components/marketing/CreatorPagePreviews';
@@ -212,7 +212,7 @@ export default function Landing() {
 
             <Reveal variant="up" delay={200}>
               <div className="mt-9 flex flex-wrap items-center gap-3">
-                <MkButton to="/register" arrow className="w-full sm:w-auto">
+                <MkButton href={`${APP_URL}/register`} arrow className="w-full sm:w-auto">
                   Create your page — free
                 </MkButton>
                 <MkButton to="/pricing" variant="ghost" className="w-full sm:w-auto">
@@ -310,7 +310,7 @@ export default function Landing() {
           </div>
           <Reveal variant="up" delay={100}>
             <div className="mt-12 flex justify-center">
-              <MkButton to="/register" arrow>
+              <MkButton href={`${APP_URL}/register`} arrow>
                 Create your page — free
               </MkButton>
             </div>
@@ -767,7 +767,7 @@ export default function Landing() {
                 the pricing page.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <MkButton to="/register" variant="light" arrow>
+                <MkButton href={`${APP_URL}/register`} variant="light" arrow>
                   Create your page — free
                 </MkButton>
                 <MkButton to="/pricing" variant="outlineLight">
@@ -820,7 +820,7 @@ export default function Landing() {
                   minutes.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <MkButton to="/register" variant="light" arrow>
+                  <MkButton href={`${APP_URL}/register`} variant="light" arrow>
                     Create your page — free
                   </MkButton>
                   <MkButton to="/pricing" variant="outlineLight">
@@ -869,9 +869,9 @@ export default function Landing() {
             <MkKicker>Try a sample page</MkKicker>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {SAMPLES.map((s) => (
-                <Link
+                <a
                   key={s.handle}
-                  to={`/u/${s.handle}`}
+                  href={`${APP_URL}/u/${s.handle}`}
                   className="group inline-flex items-center gap-3 rounded-full border border-[rgba(26,18,11,0.09)] bg-white py-1.5 pl-1.5 pr-4 shadow-[0_10px_24px_-18px_rgba(48,16,64,0.5)] transition hover:-translate-y-0.5 hover:border-[rgba(26,18,11,0.18)] hover:shadow-[0_18px_34px_-18px_rgba(48,16,64,0.45)]"
                 >
                   <span
@@ -887,7 +887,7 @@ export default function Landing() {
                   <span className="text-[11px] text-[#8a7767] transition-colors group-hover:text-[#e8420f]">
                     <IconExternal />
                   </span>
-                </Link>
+                </a>
               ))}
             </div>
           </div>

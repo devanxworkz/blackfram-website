@@ -10,6 +10,7 @@ import {
   IconYoutube,
 } from '../../components/icons';
 import { MkButton, MkIconBadge, MkKicker } from '../../components/marketing/MarketingKit';
+import { APP_URL } from '../../lib/appUrl';
 
 /* ------------------------------- mock screens ------------------------------ */
 /* (unchanged SVG mocks from the previous design) */
@@ -212,7 +213,7 @@ export default function Features() {
               vivid place — no website, no app, no code.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <MkButton to="/register" arrow>
+              <MkButton href={`${APP_URL}/register`} arrow>
                 Start for free
               </MkButton>
               <MkButton to="/pricing" variant="ghost">
@@ -400,7 +401,7 @@ export default function Features() {
             ))}
           </div>
           <div className="mt-9 flex justify-center">
-            <MkButton to="/register" variant="light" arrow>
+            <MkButton href={`${APP_URL}/register`} variant="light" arrow>
               Turn attention into income
             </MkButton>
           </div>

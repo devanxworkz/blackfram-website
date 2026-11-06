@@ -1,14 +1,9 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useAuth } from './context/AuthProvider';
-import { MarketingLayout } from './components/MarketingLayout';
 import { AppShell } from './components/AppShell';
 import { Spinner } from './components/ui';
 
-import Landing from './pages/marketing/Landing';
-import Features from './pages/marketing/Features';
-import Pricing from './pages/marketing/Pricing';
-import StaticPage from './pages/marketing/StaticPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
@@ -59,14 +54,8 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <Routes>
-      {/* Marketing */}
-      <Route path="/" element={<MarketingLayout><Landing /></MarketingLayout>} />
-      <Route path="/features" element={<MarketingLayout><Features /></MarketingLayout>} />
-      <Route path="/pricing" element={<MarketingLayout><Pricing /></MarketingLayout>} />
-      <Route path="/about" element={<MarketingLayout><StaticPage /></MarketingLayout>} />
-      <Route path="/contact" element={<MarketingLayout><StaticPage /></MarketingLayout>} />
-      <Route path="/privacy" element={<MarketingLayout><StaticPage /></MarketingLayout>} />
-      <Route path="/terms" element={<MarketingLayout><StaticPage /></MarketingLayout>} />
+      {/* Root redirects into the app (auth-gated). */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       {/* Auth */}
       <Route path="/login" element={<Login />} />
