@@ -8,6 +8,7 @@ export interface SessionUser {
   email: string;
   role: Role;
   status: UserStatus;
+  emailVerifiedAt: string | null;
 }
 
 export async function createSession(userId: string, userAgent?: string | undefined | null): Promise<{
@@ -33,9 +34,10 @@ export async function resolveSession(token: string): Promise<SessionUser | null>
     email: string;
     role: Role;
     status: UserStatus;
+    email_verified_at: Date | string | null;
     expires_at: Date | string;
   }>(
-    `select u.id, u.email, u.role, u.status, s.expires_at
+    `select u.id, u.email, u.role, u.status, u.email_verified_at, s.expires_at
      from sessions s
      join users u on u.id = s.user_id
      where s.token_hash = $1
@@ -46,7 +48,13 @@ export async function resolveSession(token: string): Promise<SessionUser | null>
   if (!row) return null;
   if (new Date(row.expires_at).getTime() < Date.now()) return null;
   if (row.status !== 'active') return null;
-  return { id: row.id, email: row.email, role: row.role, status: row.status };
+  return {
+    id: row.id,
+    email: row.email,
+    role: row.role,
+    status: row.status,
+    emailVerifiedAt: row.email_verified_at ? new Date(row.email_verified_at).toISOString() : null,
+  };
 }
 
 export async function deleteSession(token: string): Promise<void> {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { wrap } from '../http/async.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireVerified } from '../middleware/auth.js';
 import {
   createLink,
   deleteLink,
@@ -12,7 +12,7 @@ import { linkCreateSchema, linkUpdateSchema, reorderSchema } from '../validation
 
 export const linksRouter = Router();
 
-linksRouter.use(requireAuth);
+linksRouter.use(requireAuth, requireVerified);
 
 linksRouter.get(
   '/',

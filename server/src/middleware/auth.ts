@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { config } from '../config.js';
-import { forbidden, unauthorized } from '../http/errors.js';
+import { ApiError, forbidden, unauthorized } from '../http/errors.js';
 import { findTenantByOwner } from '../services/account.js';
 import { resolveSession } from '../services/sessions.js';
 
@@ -31,5 +31,13 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
 export function requireAdmin(req: Request, _res: Response, next: NextFunction): void {
   if (!req.auth) return next(unauthorized());
   if (req.auth.user.role !== 'admin') return next(forbidden('Administrators only.'));
+  next();
+}
+
+export function requireVerified(req: Request, _res: Response, next: NextFunction): void {
+  if (!req.auth) return next(unauthorized());
+  if (!req.auth.user.emailVerifiedAt) {
+    return next(new ApiError(403, 'email_not_verified', 'Please verify your email address before continuing.'));
+  }
   next();
 }

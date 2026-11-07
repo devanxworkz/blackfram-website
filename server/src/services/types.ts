@@ -11,6 +11,7 @@ export interface UserRow {
   password_hash: string;
   role: Role;
   status: UserStatus;
+  email_verified_at: Date | string | null;
   created_at: Date | string;
 }
 

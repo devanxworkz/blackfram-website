@@ -13,6 +13,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +31,10 @@ export default function Login() {
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.status === 401) setError('Invalid email or password.');
-        else if (err.status === 403) setError('This account has been suspended.');
+        else if (err.code === 'email_not_verified') {
+          setError('Please verify your email address before logging in.');
+          setUnverifiedEmail(email);
+        } else if (err.status === 403) setError('This account has been suspended.');
         else if (err.status === 0 || err.status >= 500) setError('Server error. Please try again later.');
         else setError(err.message);
       } else {
@@ -83,6 +87,16 @@ export default function Login() {
           <div role="alert" className="rounded-md border border-danger/30 bg-red-50 px-3 py-2 text-sm text-danger">
             {error}
           </div>
+        )}
+        {unverifiedEmail && (
+          <p className="text-sm">
+            <Link
+              to={`/verify-pending?email=${encodeURIComponent(unverifiedEmail)}`}
+              className="font-semibold text-accent hover:underline"
+            >
+              Resend verification email
+            </Link>
+          </p>
         )}
         <Field label="Email" htmlFor="email">
           <Input

@@ -3,8 +3,9 @@ import { randomBytes } from 'node:crypto';
 import { config } from '../config.js';
 import { wrap } from '../http/async.js';
 import { clearSessionCookie, setSessionCookie } from '../http/cookies.js';
-import { badRequest, forbidden, unauthorized } from '../http/errors.js';
+import { ApiError, badRequest, forbidden, unauthorized } from '../http/errors.js';
 import { requireAuth } from '../middleware/auth.js';
+import { rateLimit } from '../middleware/rate-limit.js';
 import {
   createAccount,
   findProfileByTenant,
@@ -27,10 +28,12 @@ import {
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
+  resendVerificationSchema,
   resetPasswordSchema,
 } from '../validation/schemas.js';
 import { verifyPassword } from '../auth/password.js';
 import { consumePasswordReset, createPasswordReset } from '../services/password-reset.js';
+import { consumeEmailVerification, createEmailVerification, isEmailVerified } from '../services/verification.js';
 import { sendEmail } from '../services/email.js';
 import { getGoogleAuthUrl, verifyGoogleCode } from '../services/oauth-google.js';
 import { getDb } from '../db/index.js';
@@ -40,14 +43,36 @@ export const authRouter = Router();
 
 authRouter.post(
   '/register',
+  rateLimit({ windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'register' }),
   wrap(async (req, res) => {
     const input = registerSchema.parse(req.body);
     const { user, tenant, profile } = await createAccount(input);
+
+    const needsVerification = process.env.NODE_ENV !== 'test';
+    if (needsVerification) {
+      await createEmailVerification(user.id, user.email);
+    } else {
+      const db = await getDb();
+      await db.query('update users set email_verified_at = now() where id = $1', [user.id]);
+    }
+
+    if (needsVerification) {
+      res.status(201).json({
+        ok: true,
+        needsVerification: true,
+        email: user.email,
+        user: { id: user.id, email: user.email, role: user.role, status: user.status, emailVerified: false },
+        tenant: { id: tenant.id, name: tenant.name },
+        profile: toProfileDto(profile),
+      });
+      return;
+    }
+
     const { token, expiresAt } = await createSession(user.id, req.get('user-agent'));
     await touchLastLogin(user.id);
     setSessionCookie(res, token, expiresAt);
     res.status(201).json({
-      user: { id: user.id, email: user.email, role: user.role, status: user.status },
+      user: { id: user.id, email: user.email, role: user.role, status: user.status, emailVerified: true },
       tenant: { id: tenant.id, name: tenant.name },
       profile: toProfileDto(profile),
     });
@@ -56,17 +81,47 @@ authRouter.post(
 
 authRouter.post(
   '/login',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 10, keyPrefix: 'login' }),
   wrap(async (req, res) => {
     const { email, password } = loginSchema.parse(req.body);
     const user = await verifyCredentials(email, password);
     if (!user) throw unauthorized('Invalid email or password.');
     if (user.status !== 'active') throw forbidden('This account has been suspended.');
+    if (!user.email_verified_at) {
+      throw new ApiError(403, 'email_not_verified', 'Please verify your email address before continuing.');
+    }
     const { token, expiresAt } = await createSession(user.id, req.get('user-agent'));
     await touchLastLogin(user.id);
     setSessionCookie(res, token, expiresAt);
     res.json({
-      user: { id: user.id, email: user.email, role: user.role, status: user.status },
+      user: { id: user.id, email: user.email, role: user.role, status: user.status, emailVerified: true },
     });
+  }),
+);
+
+authRouter.get(
+  '/verify-email',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 20, keyPrefix: 'verify' }),
+  wrap(async (req, res) => {
+    const token = typeof req.query.token === 'string' ? req.query.token : '';
+    if (!token) throw badRequest('Missing verification token.');
+    const userId = await consumeEmailVerification(token);
+    if (!userId) throw badRequest('Invalid or expired verification link.');
+    res.json({ ok: true });
+  }),
+);
+
+authRouter.post(
+  '/resend-verification',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'resend-verify' }),
+  wrap(async (req, res) => {
+    const { email } = resendVerificationSchema.parse(req.body);
+    const user = await findUserByEmail(email);
+    if (user && !user.email_verified_at) {
+      await createEmailVerification(user.id, user.email);
+    }
+    // Generic response to avoid account enumeration
+    res.json({ ok: true });
   }),
 );
 
@@ -86,7 +141,7 @@ authRouter.get(
     const { user, tenantId } = req.auth!;
     const profile = await findProfileByTenant(tenantId);
     res.json({
-      user: { id: user.id, email: user.email, role: user.role, status: user.status },
+      user: { id: user.id, email: user.email, role: user.role, status: user.status, emailVerified: !!req.auth!.user.emailVerifiedAt },
       tenant: { id: tenantId },
       profile: profile
         ? { ...toProfileDto(profile), publicUrl: `${config.publicBaseUrl}/u/${profile.username}` }
@@ -113,6 +168,7 @@ authRouter.post(
 
 authRouter.post(
   '/forgot-password',
+  rateLimit({ windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'forgot' }),
   wrap(async (req, res) => {
     const { email } = forgotPasswordSchema.parse(req.body);
     const user = await findUserByEmail(email);
@@ -154,7 +210,13 @@ authRouter.get(
   '/google/url',
   wrap(async (_req, res) => {
     const state = randomBytes(16).toString('hex');
-    // state is returned to client; in production store in httpOnly cookie/session
+    res.cookie('oauth_state', state, {
+      httpOnly: true,
+      sameSite: config.sessionCookieSameSite,
+      secure: config.isProd,
+      path: '/',
+      maxAge: 10 * 60 * 1000,
+    });
     const url = getGoogleAuthUrl(state);
     res.json({ url, state });
   }),
@@ -165,6 +227,13 @@ authRouter.get(
   wrap(async (req, res) => {
     const code = typeof req.query.code === 'string' ? req.query.code : '';
     const error = typeof req.query.error === 'string' ? req.query.error : '';
+    const state = typeof req.query.state === 'string' ? req.query.state : '';
+    const cookieState = typeof req.cookies?.oauth_state === 'string' ? req.cookies.oauth_state : '';
+    res.clearCookie('oauth_state', { path: '/' });
+    if (!state || !cookieState || state !== cookieState) {
+      console.warn('[auth] Google OAuth state mismatch');
+      return res.redirect(`${config.appBaseUrl}/login?error=google`);
+    }
     if (error) {
       console.warn(`[auth] Google OAuth error: ${error}`);
       return res.redirect(`${config.appBaseUrl}/login?error=google`);

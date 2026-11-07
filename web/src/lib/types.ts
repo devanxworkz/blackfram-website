@@ -7,6 +7,7 @@ export interface SessionUser {
   email: string;
   role: Role;
   status: 'active' | 'suspended';
+  emailVerified?: boolean;
 }
 
 export interface Theme {

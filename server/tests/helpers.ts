@@ -3,6 +3,7 @@ import type { Express } from 'express';
 import { createApp } from '../src/app.js';
 import { getDb } from '../src/db/index.js';
 import { migrate } from '../src/db/migrate.js';
+import { resetRateLimits } from '../src/middleware/rate-limit.js';
 
 let app: Express | null = null;
 
@@ -18,9 +19,10 @@ export async function resetDb(): Promise<void> {
   const db = await getDb();
   await migrate();
   await db.exec(
-    `truncate table admin_audit_log, page_views, sessions, products, links, profiles, tenants, users
+    `truncate table admin_audit_log, page_views, sessions, products, links, profiles, tenants, users, email_verification_tokens
      restart identity cascade`,
   );
+  resetRateLimits();
 }
 
 export function agent(a: Express) {

@@ -37,9 +37,18 @@ export default function Register() {
     setFieldErrors({});
     setBusy(true);
     try {
-      await api.post('/api/auth/register', { email, password, displayName, username });
+      const res = await api.post<{ needsVerification?: boolean; email?: string }>('/api/auth/register', {
+        email,
+        password,
+        displayName,
+        username,
+      });
       await refresh();
-      navigate('/dashboard', { replace: true });
+      if (res?.needsVerification) {
+        navigate(`/verify-pending?email=${encodeURIComponent(email)}`, { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     } catch (err) {
       if (err instanceof ApiError) {
         const fe: Record<string, string> = {};

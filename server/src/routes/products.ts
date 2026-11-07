@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { wrap } from '../http/async.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireVerified } from '../middleware/auth.js';
 import {
   createProduct,
   deleteProduct,
@@ -16,7 +16,7 @@ import {
 
 export const productsRouter = Router();
 
-productsRouter.use(requireAuth);
+productsRouter.use(requireAuth, requireVerified);
 
 productsRouter.get(
   '/',

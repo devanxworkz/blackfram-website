@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { config } from '../config.js';
 import { wrap } from '../http/async.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireVerified } from '../middleware/auth.js';
 import { toProfileDto } from '../services/mappers.js';
 import {
   getProfileByTenant,
@@ -26,7 +26,7 @@ function withUrl(p: ProfileRow) {
   return { ...toProfileDto(p), publicUrl: `${config.publicBaseUrl}/u/${p.username}` };
 }
 
-profileRouter.use(requireAuth);
+profileRouter.use(requireAuth, requireVerified);
 
 profileRouter.get(
   '/',

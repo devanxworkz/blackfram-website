@@ -10,7 +10,7 @@ export function isUniqueViolation(err: unknown): boolean {
 export async function findUserByEmail(email: string): Promise<UserRow | null> {
   const db = await getDb();
   const { rows } = await db.query<UserRow>(
-    'select id, email, password_hash, role, status, created_at from users where email_lower = lower($1)',
+    'select id, email, password_hash, role, status, email_verified_at, created_at from users where email_lower = lower($1)',
     [email],
   );
   return rows[0] ?? null;
@@ -19,7 +19,7 @@ export async function findUserByEmail(email: string): Promise<UserRow | null> {
 export async function findUserById(id: string): Promise<UserRow | null> {
   const db = await getDb();
   const { rows } = await db.query<UserRow>(
-    'select id, email, password_hash, role, status, created_at from users where id = $1',
+    'select id, email, password_hash, role, status, email_verified_at, created_at from users where id = $1',
     [id],
   );
   return rows[0] ?? null;
