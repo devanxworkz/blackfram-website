@@ -15,7 +15,7 @@ export type TemplateKey =
   | 'indian-boutique';
 
 export type FontKey = 'sans' | 'serif' | 'rounded' | 'display';
-export type BackgroundKind = 'solid' | 'gradient';
+export type BackgroundKind = 'solid' | 'gradient' | 'image';
 export type AvatarShape = 'circle' | 'rounded' | 'square';
 export type AvatarAlign = 'center' | 'left';
 export type ButtonShape = 'pill' | 'rounded' | 'square';
@@ -419,8 +419,10 @@ export function normalizeAppearance(
   const inheritedAccent =
     template || !theme?.accent || !isHex(theme.accent) ? null : theme.accent;
 
+  const hasImage =
+    typeof bg.imageUrl === 'string' && isSafeHttpUrl(bg.imageUrl);
   const background: Appearance['background'] = {
-    kind: enumOf(bg.kind, ['solid', 'gradient'] as const, d.background.kind),
+    kind: hasImage ? 'image' : enumOf(bg.kind, ['solid', 'gradient', 'image'] as const, d.background.kind),
     color: colourOf(bg.color, d.background.color),
     gradientFrom: colourOf(bg.gradientFrom, d.background.gradientFrom),
     gradientTo: colourOf(bg.gradientTo, d.background.gradientTo),

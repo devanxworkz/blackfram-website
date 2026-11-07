@@ -387,6 +387,7 @@ export default function Appearance() {
                   options: [
                     { value: 'solid' as const, label: 'Solid colour' },
                     { value: 'gradient' as const, label: 'Two-colour gradient' },
+                     { value: 'image' as const, label: 'Background image' },
                   ],
                   onChange: (v) => setBg({ kind: v }),
                 })}
@@ -421,6 +422,7 @@ export default function Appearance() {
                     })}
                   </>
                 )}
+                {a.background.kind === 'image' && (
                 <Field
                   label="Background image URL"
                   htmlFor="bg-image"
@@ -434,7 +436,8 @@ export default function Appearance() {
                     onChange={(e) => setBg({ imageUrl: e.target.value })}
                   />
                 </Field>
-                {a.background.imageUrl.trim() !== '' && !isSafeHttpUrl(a.background.imageUrl) && (
+                )}
+                {a.background.kind === 'image' && a.background.imageUrl.trim() !== '' && !isSafeHttpUrl(a.background.imageUrl) && (
                   <p className="text-xs font-medium text-danger">
                     Enter a full http:// or https:// URL to preview the image.
                   </p>

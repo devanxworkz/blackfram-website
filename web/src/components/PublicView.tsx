@@ -6,6 +6,7 @@ import { formatINR, hostOf, upiLink, whatsappLink } from '../lib/format';
 import {
   FONT_STACKS,
   ensureContrast,
+  isSafeHttpUrl,
   ensureContrastAll,
   normalizeAppearance,
   readableOn,
@@ -63,10 +64,11 @@ function shadowFor(shadow: Appearance['button']['shadow']): string {
 
 function backgroundStyle(a: Appearance): CSSProperties {
   const bg = a.background;
-  if (bg.imageUrl) {
+  // Image mode is exclusive: render only the image, no colour/gradient overlay.
+  if (bg.imageUrl && isSafeHttpUrl(bg.imageUrl)) {
     return {
       backgroundColor: bg.color,
-      backgroundImage: `url("${bg.imageUrl}")`,
+      backgroundImage: `url("${bg.imageUrl.trim()}")`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -74,6 +76,10 @@ function backgroundStyle(a: Appearance): CSSProperties {
   }
   if (bg.kind === 'gradient') {
     return { background: `linear-gradient(${bg.gradientAngle}deg, ${bg.gradientFrom}, ${bg.gradientTo})` };
+  }
+  if (bg.kind === 'image') {
+    // Image kind but no (valid) URL: fall back to solid colour.
+    return { backgroundColor: bg.color };
   }
   return { backgroundColor: bg.color };
 }
@@ -188,10 +194,6 @@ export function PublicView({ data, onLinkClick, compact = false }: Props) {
 
   return (
     <div data-public-view style={rootStyle} className={compact ? 'relative overflow-hidden rounded-2xl' : 'relative min-h-screen'}>
-      {bg.imageUrl && (
-        <div aria-hidden="true" className="absolute inset-0" style={{ backgroundColor: withAlpha(bg.color, 0.84) }} />
-      )}
-
       <header
         className={`relative z-10 ${compact ? 'px-5 pb-5 pt-7' : 'px-5 pb-8 pt-10 sm:pt-14'} ${
           alignLeft ? 'text-left' : 'text-center'
