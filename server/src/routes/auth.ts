@@ -49,8 +49,10 @@ authRouter.post(
     const { user, tenant, profile } = await createAccount(input);
 
     const needsVerification = process.env.NODE_ENV !== 'test';
+    let emailSent = true;
     if (needsVerification) {
-      await createEmailVerification(user.id, user.email);
+      const result = await createEmailVerification(user.id, user.email);
+      emailSent = result.sent;
     } else {
       const db = await getDb();
       await db.query('update users set email_verified_at = now() where id = $1', [user.id]);
@@ -60,6 +62,7 @@ authRouter.post(
       res.status(201).json({
         ok: true,
         needsVerification: true,
+        emailSent,
         email: user.email,
         user: { id: user.id, email: user.email, role: user.role, status: user.status, emailVerified: false },
         tenant: { id: tenant.id, name: tenant.name },

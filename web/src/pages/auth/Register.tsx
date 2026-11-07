@@ -38,7 +38,7 @@ export default function Register() {
     setFieldErrors({});
     setBusy(true);
     try {
-      const res = await api.post<{ needsVerification?: boolean; email?: string }>('/api/auth/register', {
+      const res = await api.post<{ needsVerification?: boolean; email?: string; emailSent?: boolean }>('/api/auth/register', {
         email,
         password,
         displayName,
@@ -46,7 +46,7 @@ export default function Register() {
       });
       await refresh();
       if (res?.needsVerification) {
-        navigate(`/verify-pending?email=${encodeURIComponent(email)}`, { replace: true });
+        navigate(`/verify-pending?email=${encodeURIComponent(email)}&sent=${res.emailSent === false ? '0' : '1'}`, { replace: true });
       } else {
         navigate('/dashboard', { replace: true });
       }
@@ -66,11 +66,13 @@ export default function Register() {
           } else {
             setError('That email or username is already taken.');
           }
+        } else if (err.status === 0 || err.status >= 500) {
+          setError('Something went wrong. Please try again.');
         } else if (Object.keys(fe).length === 0) {
           setError(err.message);
         }
       } else {
-        setError('Could not create your account. Please try again.');
+        setError('Something went wrong. Please try again.');
       }
     } finally {
       setBusy(false);

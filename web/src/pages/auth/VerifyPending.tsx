@@ -7,6 +7,7 @@ import { ApiError, api } from '../../lib/api';
 export default function VerifyPending() {
   const [params] = useSearchParams();
   const initialEmail = params.get('email') ?? '';
+  const emailSent = params.get('sent');
   const [email, setEmail] = useState(initialEmail);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +37,11 @@ export default function VerifyPending() {
         </Link>
       }
     >
+      {emailSent === '0' && (
+        <div role="alert" className="mb-4 rounded-md border border-danger/30 bg-red-50 px-3 py-2 text-sm text-danger">
+          We could not send the verification email. Please use the button below to try again.
+        </div>
+      )}
       <div role="status" className="space-y-3 text-sm">
         <p className="rounded-md border border-border bg-surface px-3 py-3 text-text">
           Check your inbox for a verification link. The link expires in 24 hours and can only be used
