@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { MarketingLayout } from '../../components/MarketingLayout';
+
 import { Field, Input } from '../../components/ui';
 import { MkKicker } from '../../components/marketing/MarketingKit';
 import { IconArrowRight } from '../../components/icons';
@@ -66,7 +66,7 @@ export default function Contact() {
   }
 
   return (
-    <MarketingLayout>
+    <div className="mk-root overflow-x-hidden">
       <section className="mk-section mk-mesh mk-noise">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 mk-grid-bg opacity-60" />
         <div aria-hidden="true" className="mk-orb -left-24 top-0 h-[22rem] w-[22rem] bg-[rgba(255,176,31,0.4)]" />
@@ -217,6 +217,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-    </MarketingLayout>
+    </div>
   );
 }
