@@ -54,6 +54,34 @@ export const resendVerificationSchema = z.object({
   email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(254),
 });
 
+export const CONTACT_CATEGORIES = [
+  'account',
+  'customization',
+  'billing',
+  'technical',
+  'sales',
+  'press',
+  'other',
+] as const;
+export type ContactCategory = (typeof CONTACT_CATEGORIES)[number];
+
+export const contactSubmissionSchema = z.object({
+  name: z.string().trim().min(1, 'Please enter your name.').max(120),
+  email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(254),
+  category: z.enum(CONTACT_CATEGORIES, { errorMap: () => ({ message: 'Please choose a reason.' }) }),
+  subject: z.string().trim().min(3, 'Please enter a subject.').max(200),
+  message: z.string().trim().min(10, 'Please enter a message of at least 10 characters.').max(5000),
+  creatorPageUrl: z
+    .string()
+    .trim()
+    .max(500)
+    .optional()
+    .or(z.literal(''))
+    .refine((v) => v === undefined || v === '' || /^https?:\/\/.+/i.test(v), 'Please enter a valid URL.'),
+  // Honeypot: should be empty; any value is treated as spam (handled in route).
+  website: z.string().max(500).optional().or(z.literal('')),
+});
+
 export const resetPasswordSchema = z.object({
   token: z.string().min(10),
   password: z.string().min(8, 'Your password must contain at least 8 characters.').max(200),
@@ -141,7 +169,7 @@ export const APPEARANCE_PRODUCT_CARDS = ['soft', 'outlined', 'flat'] as const;
 export const appearanceSchema = z.object({
   template: z.enum(APPEARANCE_TEMPLATES),
   background: z.object({
-    kind: z.enum(['solid', 'gradient']),
+    kind: z.enum(['solid', 'gradient', 'image']),
     color: hexColor,
     gradientFrom: hexColor,
     gradientTo: hexColor,
