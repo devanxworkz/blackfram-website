@@ -33,6 +33,7 @@ export default function Register() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setError(null);
     setFieldErrors({});
     setBusy(true);
@@ -58,7 +59,13 @@ export default function Register() {
         }
         setFieldErrors(fe);
         if (err.status === 409) {
-          setError('That email or username is already taken.');
+          if (fe.email) {
+            setError('An account may already exist with this email. Try logging in or resetting your password.');
+          } else if (fe.username) {
+            setError('This username is already taken. Please choose another one.');
+          } else {
+            setError('That email or username is already taken.');
+          }
         } else if (Object.keys(fe).length === 0) {
           setError(err.message);
         }

@@ -59,7 +59,7 @@ describe('auth', () => {
       .post('/api/auth/login')
       .send({ email: 'login@example.com', password: 'wrong-password' })
       .expect(401);
-    expect(res.body.error.message).toMatch(/invalid email or password/i);
+    expect(res.body.error.message).toMatch(/email or password you entered is incorrect/i);
   });
 
   it('blocks anonymous access to protected routes', async () => {

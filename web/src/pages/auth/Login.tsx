@@ -21,6 +21,7 @@ export default function Login() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setError(null);
     setBusy(true);
     try {
@@ -30,12 +31,12 @@ export default function Login() {
       navigate(from, { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
-        if (err.status === 401) setError('Invalid email or password.');
+        if (err.status === 401) setError('The email or password you entered is incorrect.');
         else if (err.code === 'email_not_verified') {
           setError('Please verify your email address before logging in.');
           setUnverifiedEmail(email);
         } else if (err.status === 403) setError('This account has been suspended.');
-        else if (err.status === 0 || err.status >= 500) setError('Server error. Please try again later.');
+        else if (err.status === 0 || err.status >= 500) setError('Something went wrong. Please try again.');
         else setError(err.message);
       } else {
         setError('Could not log in. Please try again.');

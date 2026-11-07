@@ -30,8 +30,8 @@ export const usernameSchema = z
   .refine((v) => !RESERVED_USERNAMES.has(v), 'That username is reserved.');
 
 export const registerSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
-  password: z.string().min(8, 'Password must be at least 8 characters.').max(200),
+  email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(254),
+  password: z.string().min(8, 'Your password must contain at least 8 characters.').max(200),
   displayName: z.string().trim().min(1, 'Enter your name.').max(80),
   username: usernameSchema,
 });
@@ -47,16 +47,16 @@ export const changePasswordSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
+  email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(254),
 });
 
 export const resendVerificationSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
+  email: z.string().trim().toLowerCase().email('Please enter a valid email address.').max(254),
 });
 
 export const resetPasswordSchema = z.object({
   token: z.string().min(10),
-  password: z.string().min(8, 'Password must be at least 8 characters.').max(200),
+  password: z.string().min(8, 'Your password must contain at least 8 characters.').max(200),
 });
 
 export const profileUpdateSchema = z.object({

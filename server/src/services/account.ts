@@ -67,7 +67,7 @@ export async function createAccount(input: CreateAccountInput): Promise<{
   const db = await getDb();
 
   if (await usernameTaken(input.username)) {
-    throw conflict('That username is already taken.', { field: 'username' });
+    throw conflict('This username is already taken. Please choose another one.', { field: 'username' });
   }
 
   const passwordHash = await hashPassword(input.password);
@@ -83,7 +83,7 @@ export async function createAccount(input: CreateAccountInput): Promise<{
     userId = rows[0]!.id;
   } catch (err) {
     if (isUniqueViolation(err)) {
-      throw conflict('An account with that email already exists.', { field: 'email' });
+      throw conflict('An account may already exist with this email. Try logging in or resetting your password.', { field: 'email' });
     }
     throw err;
   }
@@ -107,7 +107,7 @@ export async function createAccount(input: CreateAccountInput): Promise<{
     // Roll back the half-created account so a taken username leaves no orphan.
     await db.query('delete from users where id = $1', [userId]);
     if (isUniqueViolation(err)) {
-      throw conflict('That username is already taken.', { field: 'username' });
+      throw conflict('This username is already taken. Please choose another one.', { field: 'username' });
     }
     throw err;
   }

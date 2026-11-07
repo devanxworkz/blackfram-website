@@ -85,10 +85,10 @@ authRouter.post(
   wrap(async (req, res) => {
     const { email, password } = loginSchema.parse(req.body);
     const user = await verifyCredentials(email, password);
-    if (!user) throw unauthorized('Invalid email or password.');
+    if (!user) throw unauthorized('The email or password you entered is incorrect.');
     if (user.status !== 'active') throw forbidden('This account has been suspended.');
     if (!user.email_verified_at) {
-      throw new ApiError(403, 'email_not_verified', 'Please verify your email address before continuing.');
+      throw new ApiError(403, 'email_not_verified', 'Please verify your email before logging in.');
     }
     const { token, expiresAt } = await createSession(user.id, req.get('user-agent'));
     await touchLastLogin(user.id);
@@ -106,7 +106,7 @@ authRouter.get(
     const token = typeof req.query.token === 'string' ? req.query.token : '';
     if (!token) throw badRequest('Missing verification token.');
     const userId = await consumeEmailVerification(token);
-    if (!userId) throw badRequest('Invalid or expired verification link.');
+    if (!userId) throw badRequest('This verification link is invalid or has expired. Please request a new one.');
     res.json({ ok: true });
   }),
 );
