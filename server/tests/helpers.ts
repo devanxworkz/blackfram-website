@@ -19,7 +19,7 @@ export async function resetDb(): Promise<void> {
   const db = await getDb();
   await migrate();
   await db.exec(
-    `truncate table admin_audit_log, page_views, sessions, products, links, profiles, tenants, users, email_verification_tokens
+    `truncate table admin_audit_log, page_views, sessions, products, links, profiles, tenants, users, email_verification_tokens, contact_submissions
      restart identity cascade`,
   );
   resetRateLimits();

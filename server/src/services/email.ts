@@ -5,6 +5,7 @@ export interface EmailOptions {
   subject: string;
   html: string;
   text: string;
+  replyTo?: string;
 }
 
 export async function sendEmail(opts: EmailOptions): Promise<{ sent: boolean; reason?: string }> {
@@ -23,6 +24,7 @@ export async function sendEmail(opts: EmailOptions): Promise<{ sent: boolean; re
           subject: opts.subject,
           html: opts.html,
           text: opts.text,
+          ...(opts.replyTo ? { reply_to: opts.replyTo } : {}),
         }),
       });
       if (res.ok) return { sent: true };
@@ -56,6 +58,7 @@ export async function sendEmail(opts: EmailOptions): Promise<{ sent: boolean; re
         subject: opts.subject,
         html: opts.html,
         text: opts.text,
+        ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
       });
       return { sent: true };
     } catch (e) {

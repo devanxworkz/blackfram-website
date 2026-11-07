@@ -13,6 +13,7 @@ import { productsRouter } from './routes/products.js';
 import { statsRouter } from './routes/stats.js';
 import { adminRouter } from './routes/admin.js';
 import { publicRouter } from './routes/public.js';
+import { contactRouter } from './routes/contact.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -61,6 +62,7 @@ export function createApp(): Express {
   app.use('/api/stats', statsRouter);
   app.use('/api/admin', adminRouter);
   app.use('/api/public', publicRouter);
+app.use('/api/contact', contactRouter);
 
   app.use('/api', notFoundHandler);
 

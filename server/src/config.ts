@@ -71,6 +71,12 @@ export const config = {
   // Production: https://your-frontend-domain.com
   appBaseUrl: process.env.APP_BASE_URL ?? (process.env.PUBLIC_BASE_URL ?? 'http://localhost:5173'),
 
+  // Contact form routing (server-controlled recipients; never from client).
+  contactSupportTo: process.env.CONTACT_SUPPORT_TO ?? '',
+  contactSalesTo: process.env.CONTACT_SALES_TO ?? '',
+  contactPressTo: process.env.CONTACT_PRESS_TO ?? '',
+  contactDefaultTo: process.env.CONTACT_DEFAULT_TO ?? '',
+
   trustProxy: bool(process.env.TRUST_PROXY, false),
 };
 
